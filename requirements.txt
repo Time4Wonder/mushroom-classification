@@ -1,5 +1,0 @@
-pandas
-ucimlrepo
-scikit-learn
-seaborn
-matplotlib
