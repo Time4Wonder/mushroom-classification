@@ -1,9 +1,41 @@
-.venv/
-__pycache__/
-*.pyc
-.DS_Store
-data/raw/*
-data/processed/*
-!data/raw/.gitkeep
-!data/processed/.gitkeep
-notebooks/.ipynb_checkpoints/
+# R-spezifische Dateien
+.Rhistory
+.Rapp.history
+.RData
+.RDataTmp
+.Ruserdata
+*.Rproj
+.Rproj.user/
+.Renviron
+
+# R Output
+/*.tar.gz
+/*.Rcheck/
+*-Ex.R
+
+# Vignettes
+vignettes/*.html
+vignettes/*.pdf
+
+# Cache
+*_cache/
+/cache/
+
+# Markdown temporäre Dateien
+*.utf8.md
+*.knit.md
+
+# Große Datendateien
+*.csv
+*.data
+*.dat
+*.rds
+*.RDS
+*.rda
+*.RData
+
+# Mushroom Datensatz speziell
+mushroom/*.data
+mushroom/*.csv
+mushroom.zip
+mushroom/*
