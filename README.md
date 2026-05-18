@@ -1,4 +1,4 @@
-# Pilz-Classification
+# Mushroom-Classification
 
 ## Übersicht
 
