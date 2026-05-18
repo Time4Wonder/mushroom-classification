@@ -1,4 +1,4 @@
-# Mushroom-Classification
+# Mushroom-Classification [WIP]
 
 ## Übersicht
 
