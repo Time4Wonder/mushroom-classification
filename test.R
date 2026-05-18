@@ -16,7 +16,9 @@ col_names <- c(
 
 # Datensatz einlesen
 mushroom <- read.csv(
+  # Lorenz Pfad:
   "/home/t4w/development/ml-project/mushroom/agaricus-lepiota.data",
+
   header = FALSE,
   col.names = col_names,
   stringsAsFactors = TRUE
@@ -25,3 +27,5 @@ mushroom <- read.csv(
 # Überblick über den Datensatz
 str(mushroom)
 summary(mushroom)
+
+
