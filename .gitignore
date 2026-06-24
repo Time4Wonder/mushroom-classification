@@ -39,3 +39,6 @@ mushroom/*.data
 mushroom/*.csv
 mushroom.zip
 mushroom/*
+
+# virtual environments
+virt/
