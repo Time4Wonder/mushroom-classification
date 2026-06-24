@@ -122,8 +122,14 @@ data$habitat <- factor(data$habitat,
                        labels = c("grasses", "leaves", "meadows", "paths", "urban", "waste", "woods"))
 
 # --- 5. Remove irrelevant features ---
-# veil_type is constant (only "partial") — no predictive value
+cat("\n--- Feature removal check ---\n")
+cat("veil_type levels:", paste(levels(data$veil_type), collapse = ", "), "\n")
+cat("veil_type distribution:\n")
+print(table(data$veil_type))
+
+# veil_type is constant (only "partial") — no predictive value (cf. Ch. 3.1 lecture)
 data$veil_type <- NULL
+cat("Removed constant feature: veil_type\n")
 
 # --- 6. Save ---
 dir.create("data/processed", recursive = TRUE, showWarnings = FALSE)
