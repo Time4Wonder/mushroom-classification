@@ -121,12 +121,16 @@ data$habitat <- factor(data$habitat,
                        levels = c("g", "l", "m", "p", "u", "w", "d"),
                        labels = c("grasses", "leaves", "meadows", "paths", "urban", "waste", "woods"))
 
-# --- 5. Save ---
+# --- 5. Remove irrelevant features ---
+# veil_type is constant (only "partial") — no predictive value
+data$veil_type <- NULL
+
+# --- 6. Save ---
 dir.create("data/processed", recursive = TRUE, showWarnings = FALSE)
 saveRDS(data, "data/processed/mushroom_clean.rds")
 
 cat("Preprocessing done.\n")
-cat("Dimensions:", nrow(data), "x", ncol(data), "\n")
+cat("Dimensions:", nrow(data), "x", ncol(data), "(veil_type removed)\n")
 cat("Class distribution:\n")
 print(table(data$class))
 cat("\nMissing values per column:\n")

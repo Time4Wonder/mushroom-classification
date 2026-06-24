@@ -23,7 +23,6 @@ Cramér's V misst die Stärke des Zusammenhangs zwischen jedem Merkmal und der Z
 | 15 | cap_surface (Hutoberfläche) | 0.197 | schwacher Zusammenhang |
 | 16 | veil_color (Velumfarbe) | 0.153 | sehr schwacher Zusammenhang |
 | 17 | stalk_shape (Stielform) | 0.102 | sehr schwacher Zusammenhang |
-| — | veil_type (Velumtyp) | — | **konstant** (nur "partial") |
 
 ![Cramér's V aller Merkmale](../docs/plots/cramers_v.png)
 
@@ -112,9 +111,9 @@ Die Stieloberfläche (ober- und unterhalb des Rings) ist ähnlich relevant (~0.5
 - Gleiches gilt für `stalk_color_above_ring` und `stalk_color_below_ring` (0.525 vs. 0.515).
 - Dies sind mögliche Kandidaten für Redundanz in einem Modell.
 
-### 4.4 Konstantes Merkmal
+### 4.4 Konstantes Merkmal (entfernt)
 
-`veil_type` hat nur eine einzige Ausprägung ("partial" / Teilvelum) und ist damit für die Klassifikation vollständig irrelevant. Es wird von den Modellen ignoriert.
+`veil_type` hat nur eine einzige Ausprägung ("partial" / Teilvelum) und ist damit für die Klassifikation vollständig irrelevant. Gemäß Kapitel 3.1 der Vorlesung (Entfernen irrelevanter Daten) wurde das Merkmal daher während der Datenaufbereitung aus dem Datensatz entfernt. Die Modelle werden mit 21 statt 22 Merkmalen trainiert.
 
 ### 4.5 Schwache Merkmale
 

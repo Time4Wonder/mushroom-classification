@@ -182,14 +182,14 @@
 | `white` | weiß |
 | `yellow` | gelb |
 
-### `veil_type` — Velum-Typ (Hülltyp)
+### `veil_type` — Velum-Typ (Hülltyp) [ENTFERNT]
 
 | Ausprägung | Bedeutung |
 |---|---|
 | `partial` | Teilvelum (Ring) |
 | `universal` | Universalvelum (Scheide) |
 
-**Anmerkung**: Im Datensatz kommt ausschließlich `partial` vor — dieses Merkmal ist daher für die Klassifikation irrelevant.
+**Anmerkung**: Im Datensatz kommt ausschließlich `partial` vor — dieses Merkmal ist konstant und wurde daher während der Datenaufbereitung (Schritt 5 in `01_preprocessing.R`) gemäß Kapitel 3.1 der Vorlesung (Entfernen irrelevanter Daten) aus dem Datensatz entfernt.
 
 ### `veil_color` — Velum-Farbe (Hüllfarbe)
 
