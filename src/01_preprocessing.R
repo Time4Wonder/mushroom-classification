@@ -131,13 +131,22 @@ print(table(data$veil_type))
 data$veil_type <- NULL
 cat("Removed constant feature: veil_type\n")
 
-# --- 6. Save ---
+# --- 6. Save full variant (21 features, veil_type removed) ---
 dir.create("data/processed", recursive = TRUE, showWarnings = FALSE)
-saveRDS(data, "data/processed/mushroom_clean.rds")
+saveRDS(data, "data/processed/mushroom_clean_full.rds")
+cat("Saved full variant (21 features): data/processed/mushroom_clean_full.rds\n")
 
-cat("Preprocessing done.\n")
-cat("Dimensions:", nrow(data), "x", ncol(data), "(veil_type removed)\n")
-cat("Class distribution:\n")
+# --- 7. Save reduced variant (without odor + spore_print_color) ---
+# Reasoning: Geruch ist subjektiv/inkonsistent, Sporenabdruck im Feld nicht praktikabel
+data_reduced <- data
+data_reduced$odor <- NULL
+data_reduced$spore_print_color <- NULL
+saveRDS(data_reduced, "data/processed/mushroom_clean_reduced.rds")
+cat("Saved reduced variant (19 features): data/processed/mushroom_clean_reduced.rds\n")
+
+cat("\n--- Summary ---\n")
+cat("Full variant dimensions:   ", nrow(data), "x", ncol(data), "\n")
+cat("Reduced variant dimensions:", nrow(data_reduced), "x", ncol(data_reduced), "\n")
+cat("Features removed in reduced:", setdiff(names(data), names(data_reduced)), "\n")
+cat("\nClass distribution:\n")
 print(table(data$class))
-cat("\nMissing values per column:\n")
-print(colSums(is.na(data)))

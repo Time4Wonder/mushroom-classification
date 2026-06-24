@@ -32,13 +32,25 @@ Der Seed `467` entspricht dem Wert aus dem Prototyp (`virt/mushroom.r`) und gew√
 
 ## 3. Ergebnisse
 
+### Full-Variante (21 Features)
+
 | Datensatz | Zeilen | edible | poisonous | Anteil edible |
 |---|---|---|---|---|
 | Gesamt | 8.124 | 4.208 | 3.916 | 51,8 % |
 | Training (70 %) | 5.687 | 2.946 | 2.741 | 51,8 % |
 | Test (30 %) | 2.437 | 1.262 | 1.175 | 51,8 % |
 
-Die Klassenproportionen bleiben im Trainings- und Testdatensatz nahezu identisch zur Gesamtverteilung.
+### Reduced-Variante (19 Features, ohne `odor` + `spore_print_color`)
+
+Gleiche Aufteilung und Klassenproportionen (derselbe Split-Index, da identische Zeilenanzahl und Klassenverteilung).
+
+| Datensatz | Zeilen | edible | poisonous | Anteil edible |
+|---|---|---|---|---|
+| Gesamt | 8.124 | 4.208 | 3.916 | 51,8 % |
+| Training (70 %) | 5.687 | 2.946 | 2.741 | 51,8 % |
+| Test (30 %) | 2.437 | 1.262 | 1.175 | 51,8 % |
+
+Die Klassenproportionen bleiben in allen Varianten identisch zur Gesamtverteilung.
 
 ## 4. Wichtige Hinweise
 

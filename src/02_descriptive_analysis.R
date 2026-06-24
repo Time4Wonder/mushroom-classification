@@ -2,7 +2,7 @@
 # Target-oriented descriptive analysis of the mushroom dataset
 
 # --- 1. Setup ---
-data <- readRDS("data/processed/mushroom_clean.rds")
+data <- readRDS("data/processed/mushroom_clean_full.rds")
 
 dir.create("docs/plots", recursive = TRUE, showWarnings = FALSE)
 

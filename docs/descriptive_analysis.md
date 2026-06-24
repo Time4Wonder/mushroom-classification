@@ -101,6 +101,8 @@ Für die Praxis bedeutet das: Ein Pilz mit starkem, unangenehmem Geruch ist mit 
 
 `odor` erreicht mit 0.971 nahezu eine perfekte Trennung. Die Merkmale `spore_print_color` (0.753) und `gill_color` (0.681) sind ebenfalls starke Prädiktoren, aber deutlich schwächer als der Geruch.
 
+> **Hinweis zu den zwei Varianten**: Für das realistischere Pilzsammler-Szenario (Reduced-Variante) werden `odor` und `spore_print_color` entfernt. `gill_color` bleibt erhalten, da die Lamellenfarbe ein Standard-Bestimmungsmerkmal ist. Die Cramér's-V-Tabelle bezieht sich auf die Full-Variante (21 Features).
+
 ### 4.2 Oberfläche vs. Farbe des Stiels
 
 Die Stieloberfläche (ober- und unterhalb des Rings) ist ähnlich relevant (~0.58). Die Stielfarbe (ober- und unterhalb) liegt etwas darunter (~0.52). Das deutet darauf hin, dass die **Beschaffenheit** des Stiels relevanter ist als seine Farbe.
@@ -118,6 +120,20 @@ Die Stieloberfläche (ober- und unterhalb des Rings) ist ähnlich relevant (~0.5
 ### 4.5 Schwache Merkmale
 
 `stalk_shape` (0.102) und `veil_color` (0.153) haben praktisch keinen Zusammenhang mit der Genießbarkeit und liefern kaum Mehrwert für die Klassifikation.
+
+### 4.6 Problem für die logistische Regression: Quasi-Complete Separation
+
+Der Datensatz enthält mehrere Merkmale mit **perfekt trennenden Ausprägungen**:
+
+- `odor`: 7 von 9 Ausprägungen sind 100%-Indikatoren (Cramér's V = 0.971)
+- `spore_print_color`: 4 von 9 Ausprägungen sind 100%-Indikatoren (Cramér's V = 0.753)
+- `gill_color`: 4 von 12 Ausprägungen sind 100%-Indikatoren (Cramér's V = 0.681)
+- `stalk_color_above_ring`: 3 von 9 Ausprägungen sind 100%-Indikatoren (Cramér's V = 0.525)
+- `stalk_color_below_ring`: 3 von 9 Ausprägungen sind 100%-Indikatoren (Cramér's V = 0.515)
+
+Das bedeutet: Selbst in der Reduced-Variante (ohne `odor` + `spore_print_color`) existieren noch Merkmale mit perfekt trennenden Leveln (`gill_color`, `stalk_color_above_ring`, `stalk_color_below_ring`). Die logistische Regression (unregularisiertes `glm`) kann unter diesen Bedingungen **keinen endlichen Maximum-Likelihood-Schätzer** finden — die Koeffizienten divergieren gegen ±∞. Dieses Phänomen wird in Kapitel 4.1 der Vorlesung als "Complete Separation" thematisiert und ist der Grund, warum `glm` auf diesem Datensatz nicht als Baseline-Modell eingesetzt werden kann.
+
+Tree-basierte Verfahren (Entscheidungsbäume, Random Forest) haben dieses Problem nicht, da sie nicht alle Parameter simultan schätzen, sondern gierig partitionieren.
 
 ---
 

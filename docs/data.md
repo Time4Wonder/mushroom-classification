@@ -8,6 +8,13 @@
 - **Zielvariable**: Binäre Klassifikation — Genießbarkeit (essbar / giftig)
 - **Fehlende Werte**: ursprünglich nur in `stalk_root` (Markierung `?`), wurden mit dem Modalwert imputiert
 
+## Zwei Varianten
+
+| Variante | Features | Entfernte Merkmale | Begründung |
+|---|---|---|---|
+| **Full** | 21 (alle außer `veil_type`) | `veil_type` (konstant) | Kein Vorhersagewert (Ch. 3.1) |
+| **Reduced** | 19 (ohne `odor`, `spore_print_color`) | `odor`, `spore_print_color` | Pilzsammler-Szenario: Geruch subjektiv/inkonsistent, Sporenabdruck im Feld nicht praktikabel |
+
 ---
 
 ## Merkmale im Detail
@@ -61,7 +68,7 @@
 | `bruises` | Druckstellen vorhanden |
 | `no` | keine Druckstellen |
 
-### `odor` — Geruch
+### `odor` — Geruch [ENTFERNT in Reduced-Variante]
 
 | Ausprägung | Bedeutung |
 |---|---|
@@ -74,6 +81,8 @@
 | `none` | geruchslos |
 | `pungent` | stechend / scharf |
 | `spicy` | würzig |
+
+**Entfernt in Reduced-Variante**: Geruch ist subjektiv, verfliegt bei Trocknung und ist als Merkmal für ein allgemeines Klassifikationssystem inkonsistent.
 
 ### `gill_attachment` — Lamellenansatz
 
@@ -221,7 +230,7 @@
 | `sheathing` | scheidig |
 | `zone` | zonenförmig |
 
-### `spore_print_color` — Sporenpulverfarbe
+### `spore_print_color` — Sporenpulverfarbe [ENTFERNT in Reduced-Variante]
 
 | Ausprägung | Bedeutung |
 |---|---|
@@ -234,6 +243,8 @@
 | `purple` | violett |
 | `white` | weiß |
 | `yellow` | gelb |
+
+**Entfernt in Reduced-Variante**: Ein Sporenabdruck benötigt mehrere Stunden — im Wald/Pilzgeschäft nicht praktikabel. Daher für ein realistisches Szenario ungeeignet.
 
 ### `population` — Wuchsform / Population
 
