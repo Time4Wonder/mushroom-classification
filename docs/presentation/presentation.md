@@ -43,16 +43,7 @@ UCI Mushroom Dataset · TH Deggendorf · SS2026
 | Fehlende Werte | nur `stalk_root` (30× `?`) → modalimputiert |
 | Konstant | `veil_type` → entfernt (Ch. 3.1) |
 
-### Zwei Varianten für die Modellierung
-
-| Variante | Features | Entfernt | Begründung |
-|---|---|---|---|
-| **Full** | 21 | `veil_type` | Alle verfügbaren Merkmale |
-| **Reduced** | 19 | + `odor`, `spore_print_color` | **Pilzsammler-Szenario:** Geruch ist subjektiv/inkonsistent, Sporenabdruck im Feld nicht praktikabel |
-
 ---
-
-<!-- note: Die reduzierte Variante ist das realistischere Szenario. Ein Pilzsammler im Wald riecht zwar manchmal, aber nicht jeder riecht gleich gut, ältere Pilze verlieren den Geruch. Einen Sporenabdruck macht niemand im Feld – das dauert Stunden. gill_color (Lamellenfarbe) bleibt drin, weil es ein Standard-Bestimmungsmerkmal in jedem Pilzbuch ist. -->
 
 ## Deskriptive Analyse: Cramér's V
 
@@ -69,11 +60,13 @@ UCI Mushroom Dataset · TH Deggendorf · SS2026
 | … | … | … | |
 | 21 | stalk_shape | 0,102 | sehr schwach |
 
+![Cramér's V nach Rang geordnet](../plots/cramers_v.png)
+
 > **Kernerkenntnis:** `odor` dominiert mit 0,971. 7 von 9 Geruchsausprägungen sind **100%-Indikatoren** – das macht den Datensatz für manche Modelle zu einfach (und für andere kaputt).
 
 ---
 
-<!-- note: Die perfekten Indikatoren sind zentral für das Verständnis, warum LogReg scheitert. Zeigen Sie hier: jedes dieser Features hat Ausprägungen, die zu 100% mit einer Klasse einhergehen. Das ist biologisch plausibel – bestimmte Pilzarten haben zwingend bestimmte Merkmale. Der Datensatz wurde bewusst so konstruiert. -->
+<!-- note: Die perfekten Indikatoren sind zentral: jedes dieser Features hat Ausprägungen, die zu 100% mit einer Klasse einhergehen. odor und spore_print_color sind die stärksten – aber fürs Pilzsammeln ungeeignet (nächste Folie). gill_color und stalk_color bleiben in Reduced drin. Dass sie auch perfekte Levels haben, führt zum glm-Fail – aber Tree-Methoden kommen damit klar. -->
 
 ## Perfekte Indikatoren – das Kernproblem
 
@@ -84,12 +77,34 @@ Mehrere Merkmale haben Ausprägungen, die die Klassen **perfekt trennen**:
 | `odor` | almond, anise | creosote, fishy, foul, musty, pungent, spicy |
 | `spore_print_color` | buff, orange, purple, yellow | green |
 | `gill_color` | orange, red | buff, green |
-| `stalk_color_above_ring` | gray, orange, red | (none – aber bis 96,4%) |
+| `stalk_color_above_ring` | gray, orange, red | buff, cinnamon, yellow |
 | `stalk_color_below_ring` | gray, orange, red | buff, cinnamon, yellow |
 
-Selbst in der **Reduced-Variante** (19 Features, ohne `odor` + `spore_print_color`) existieren noch perfekt trennende Levels (`gill_color`, `stalk_color`).
+![Top-8: bedingte Verteilung der Klassen pro Feature-Ausprägung](../plots/top8_conditional_barplots.png)
 
-> **Kernerkenntnis:** Der Datensatz wurde für regelbasierte Bestimmung konzipiert. Probabilistische Modelle (LogReg) kommen damit nicht zurecht – Tree-Methoden schon.
+> **Kernerkenntnis:** Der Datensatz wurde für regelbasierte Bestimmung konzipiert. Diese Merkmale machen das Problem trügerisch einfach – Modelle, die sie nutzen, werden scheinbar perfekt, ohne wirklich gelernt zu haben.
+
+---
+
+<!-- note: Nachdem die deskriptive Analyse gezeigt hat, dass odor und spore_print_color das Problem dominieren, stellen wir jetzt die Frage: Sind diese Merkmale im Anwendungskontext überhaupt sinnvoll? Die Antwort für das Pilzsammler-Szenario ist klar: Nein. Geruch ist situationsabhängig und Sporenabdruck ist Laborarbeit. Also wird auf Reduced trainiert, wo sich die echten Unterschiede zwischen den Modellen zeigen. -->
+
+## Reduzierte Variante – Pilzsammler-Szenario
+
+### Erkenntnis aus der Analyse
+
+`odor` (Cramér's V = 0,971) und `spore_print_color` (0,753) dominieren die Klassifikation. Sie haben Levels, die die Klassen perfekt trennen – aber sind sie im Feld praktikabel?
+
+| Merkmal | Cramér's V | Problem |
+|---------|:----------:|---------|
+| `odor` | **0,971** | **Situationsabhängig vergänglich:** Geruch verfliegt bei Alterung/Trocknung, wird im Wald von Umgebungsgerüchen überlagert. Sporengefahr beim Riechen. |
+| `spore_print_color` | **0,753** | **Kein Feldmerkmal:** Sporenabdruck benötigt 2–6 Stunden + Papier → für Pilzsammler unterwegs nicht machbar. |
+
+### Konsequenz: Reduced-Variante (19 Features)
+
+→ `gill_color` (0,681) bleibt drin – Standard-Bestimmungsmerkmal, frisch gut erkennbar
+→ Alle Modelle werden auf dieser Variante trainiert und evaluiert
+
+> **Kernerkenntnis:** Die Reduced-Variante bildet ab, was ein Pilzsammler **vor Ort und ohne Hilfsmittel** bestimmen kann. Das ist der relevante Use Case – und hier zeigt sich der echte Unterschied zwischen den Verfahren.
 
 ---
 
@@ -116,93 +131,80 @@ Selbst in der **Reduced-Variante** (19 Features, ohne `odor` + `spore_print_colo
 
 ---
 
-<!-- note: glm (Ch. 4.1) ist das einfachste aller Verfahren. Schätze Koeffizienten via Maximum Likelihood, sigmoid am Ende. Die logistische Regression ist baugleich mit einem einzelnen Neuron (Perzeptron mit Sigmoid-Aktivierung). Die Koeffizienten geben an, wie stark jedes Merkmal in Richtung "essbar" zeigt. -->
+<!-- note: glm (Ch. 4.1) ist das einfachste aller Verfahren. Schätze Koeffizienten via Maximum Likelihood, sigmoid am Ende. Auch auf der Reduced-Variante scheitert glm – nicht weil wir zu wenig Features entfernt hätten, sondern weil die Methode mit deterministischen Levels nicht umgehen kann. Bäume machen das besser: nächste Folie. Zeigen Sie die R-Ausgaben als harte Belege. -->
 
 ## Methode 1: Logistische Regression (glm)
 
-### Perfect Separation – das Modell versagt
+### Perfect Separation – R-Ausgaben zeigen das Problem
 
-Die logistische Regression schätzt **alle Koeffizienten gleichzeitig** per Maximum Likelihood. Existiert eine Linearkombination, die die Daten perfekt trennt, geht der Schätzer gegen ±∞.
+```r
+> glm(class ~ ., data = train_reduced, family = binomial)
+glm.fit: algorithm did not converge
+glm.fit: fitted probabilities numerically 0 or 1 occurred
+```
 
-**Ergebnis auf beiden Varianten:**
-
-| Aspekt | Full (21 Feat.) | Reduced (19 Feat.) |
-|---|---|---|
-| Konvergenz | ❌ *`glm.fit: algorithm did not converge`* | ❌ *gleicher Fehler* |
-| Ursache | `odor` (0,971) | `gill_color`, `stalk_color` (perfekte Levels) |
-| Residual Deviance | ~0 (degeneriert) | ~0 (degeneriert) |
-| Vorhersagen | 100% falsch | 100% falsch |
+| Indikator | R-Ausgabe | Bedeutung |
+|-----------|-----------|-----------|
+| Koeffizienten | `cinnamon: 252,5` / `rooted: −198,0` | β → ±∞ |
+| Standardfehler | `1,75e+05` / `1,24e+05` | Keine Schätzgenauigkeit |
+| **Singularitäten** | **6 nicht definiert (NA)** | **Multikollinearität** |
+| Residual Deviance | `6,51e-08` (Null: 7876) | Degenerierter Fit |
+| Confusion Matrix | 1172 FP, 1262 FN, Acc: 0,12% | Nicht verwertbar |
 
 **Lehrbuchbezug (Ch. 4.1):** *"Bei perfekter Trennung existiert der ML-Schätzer nicht."*
 
-> **Kernerkenntnis:** glm ist für diesen Datensatz **ungeeignet** – nicht wegen Implementierungsfehlern, sondern wegen der Datenstruktur (deterministische Merkmals-Giftigkeit-Beziehungen). Die logistische Regression ist kein "Allheilmittel". Als Negativbeispiel didaktisch wertvoll.
+> **Kernerkenntnis:** Deterministische Levels brechen die simultane ML-Schätzung. Das ist kein Feature-Problem, sondern ein **Methodenproblem** – Bäume splitten solche Fälle in Blattknoten (nächste Folie).
 
 ---
 
-<!-- note: Entscheidungsbäume (Ch. 4.1) partitionieren den Merkmalsraum rekursiv. An jedem Knoten wird das Merkmal gewählt, das den Gini-Index maximiert – also die "Reinheit" der Klassen nach dem Split. Der Vorteil: Es wird nie ein Koeffizient geschätzt, sondern nur geschaut: "Sind die Daten auf dieser Seite eher essbar oder giftig?" Wenn ein Level perfekt trennt (wie gill_color = orange → immer essbar), wird sofort ein Blattknoten erzeugt – problemlos. -->
+<!-- note: Was lernen wir aus dem LogReg-Scheitern? Dass nicht jedes Verfahren zu jedem Datensatz passt. Die logistische Regression ist kein Allheilmittel – sie hat strukturelle Grenzen. Deterministische Levels + simultane ML-Schätzung = nicht kombinierbar. Bäume sind die logische Alternative. -->
 
-## Methode 2: Decision Tree (rpart)
+## Methode 1: Logistische Regression – Fazit
 
-### Warum Bäume funktionieren
+### Was lernen wir daraus?
 
-| Aspekt | glm (LogReg) | rpart (Tree) |
+- LogReg scheitert nicht an Implementierung, sondern an **struktureller Limitierung**: Deterministische Levels → ML-Schätzer existiert nicht (Ch. 4.1)
+- **Mögliche Fixes:** Firth's Bias-Reduktion (`logistf`) oder LASSO (Ch. 9.3, `glmnet`) – würden Koeffizienten regularisieren
+- Für diesen Datensatz aber: **Bäume sind der bessere Ansatz** – sie nutzen deterministische Levels als Blattknoten
+
+> **Fazit:** Die Methode muss zur Datenstruktur passen – nicht umgekehrt. LogReg ist kein Allheilmittel, sondern ein Werkzeug mit spezifischen Voraussetzungen.
+
+---
+
+<!-- note: Entscheidungsbäume (Ch. 4.1) partitionieren den Merkmalsraum rekursiv. Anders als LogReg schätzen sie keine Koeffizienten, sondern suchen gierig den besten Split. Deterministische Levels werden sofort zu Blattknoten – kein Problem. Tuning des cp-Parameters via 10-fold CV + 1-SE-Regel. Die Evaluierung zeigt den Vergleich Standard vs. Cost-sensitive, der asymmetrische Kosten abbildet. -->
+
+## Methode 2: Decision Tree – Ergebnisse
+
+### Evaluierung: Standard Tree vs. Cost-sensitive Tree
+
+| Metrik | Standard (1:1) | Cost-sensitive (10x) |
 |---|---|---|
-| Schätzung | Simultane ML-Schätzung | Gierige Split-Suche |
-| Perfekte Trennung | ❌ Bricht die Optimierung | ✅ Erzeugt sofort Blattknoten |
-| Nominale Merkmale | Dummy-Kodierung nötig | Nativ verarbeitet |
-| Ergebnis | Koeffizienten | Wenn-Dann-Regeln |
+| **FP (TOD)** | **2** | **0 ✅** |
+| FN (harmlos) | 4 | 20 |
+| Accuracy | 99,75% | 99,18% |
+| Specificity | 99,83% | **100% ✅** |
 
-### cp-Tuning via 10-fold CV (Ch. 6.3)
+**Eckpunkte:**
+- cp-Tuning via 10-fold CV + 1-SE-Regel → 38 Splits, 11 Merkmale
+- Cost-Matrix: FN = 10× Kosten → eliminiert tödliche Fehler
+- Wurzel-Split: `stalk_color_above_ring` (erkennbar im Baum)
 
-```
-   cp       nsplit   xerror    xstd
-   0.60124   0      1.00000   0.01375
-   0.12003   1      0.39876   0.01084
-   0.00109  19      0.00547   0.00141   ← min xerror
-   0.00100  20      0.00693   0.00159
-```
-
-- **Minimaler CV-Fehler:** 0,00547 (19 Splits, cp = 0,00109)
-- **1-SE-Regel** bestätigt cp = 0,00109 → **38 Splits**, 11 von 19 Merkmalen genutzt
+![Baumvisualisierung (Cost-sensitive Tree)](../plots/tree_plot.png)
 
 ---
 
-<!-- note: Der Cost-sensitive Ansatz ist State-of-the-Practice für asymmetrische Kosten. rpart erlaubt das Setzen einer Loss-Matrix über parms = list(loss = ...). Das ist kein Hack, sondern vorgesehener Mechanismus. Der Baum wächst so, dass FP (giftig → essbar) 10x härter bestraft werden als FN (essbar → giftig). In der Praxis würde man das Kostenverhältnis mit Fachexperten (Mykologen) abstimmen. -->
+<!-- note: Was lernen wir aus dem Decision Tree? Cost-sensitive Learning ist der richtige Ansatz für asymmetrische Kosten. Der Baum liefert 0 TOD bei voller Interpretierbarkeit – das ist für die Praxis entscheidend. Die 20 FN sind harmlos (Pilz wird nicht gegessen). Der Preis für Interpretierbarkeit ist etwas niedrigere Accuracy (99,18% vs. RF 100%). -->
 
-## Cost-sensitive Decision Tree
+## Methode 2: Decision Tree – Fazit
 
-### Loss Matrix: FN tödlich, FP harmlos
+### Was lernen wir daraus?
 
-```
-           vorhergesagt edible   vorhergesagt poisonous
-edible          0 (korrekt)          1 (FP = harmlos)
-poisonous      10 (FN = TOD)         0 (korrekt)
-```
+- Cost-sensitive Ansatz eliminiert **alle tödlichen Fehler** (0 FP)
+- Der Baum ist **voll interpretierbar** – die Regeln können von Menschen nachvollzogen werden
+- cp-Tuning + 1-SE-Regel sorgt für **robuste Generalisierung**
+- **Trade-off:** 20 FN (harmlos) vs. RF's 0 FN – aber dafür **erklärbar**
 
-**Interpretation:** Ein giftiger Pilz, der als essbar eingestuft wird, kostet **10× mehr** als umgekehrt. Der Baum minimiert diese gewichteten Kosten.
-
-### Vergleich: Standard vs. Cost-sensitive
-
-| Metrik | Standard (1:1) | Cost-sensitive (10x) | ✅ |
-|---|---|---|---|
-| **FP (giftig → essbar = TOD)** | **2** | **0** | **Cost** |
-| FN (essbar → giftig = harmlos) | 4 | 20 | |
-| Accuracy | 99,75% | 99,18% | |
-| Specificity | 99,83% | **100,00%** | **Cost** |
-
-> **Kernerkenntnis:** Der Cost-sensitive Tree hat **0 tödliche Fehler**. Dafür werden 20 essbare Pilze fälschlich als giftig eingestuft (harmlos). Für die Praxis die **bessere Wahl**.
-
----
-
-<!-- note: Der erste Split geht auf stalk_color_above_ring (nicht gill_color!). Der Cost-sensitive Baum sucht zuerst nach Merkmalen, die giftige Pilze sicher erkennen. Alle Pilze mit grauem/orangenem/rotem Stiel werden sofort als essbar eingeordnet – diese Stielfarben kommen bei giftigen Pilzen praktisch nie vor. Der Baum ist mit 68 Splits deutlich komplexer als der Standardbaum (38 Splits). -->
-
-## Baumvisualisierung (Cost-sensitive Tree)
-
-![Cost-sensitive Decision Tree](../plots/tree_plot.png)
-
-- **Wurzel:** `stalk_color_above_ring` (nicht `gill_color`!)
-- **68 Splits**, 15 von 19 Merkmalen genutzt
-- 100% Specificity: **alle giftigen Pilze korrekt erkannt**
+> **Fazit:** Der Cost-sensitive Decision Tree ist die **beste Wahl für die Praxis**: 0 tödliche Fehler, robust getuned, und jeder Entscheidungspfad ist nachvollziehbar.
 
 ---
 
@@ -226,6 +228,8 @@ poisonous      10 (FN = TOD)         0 (korrekt)
 | Feature Importance | Nicht direkt | ✅ **Variable Importance** Plot |
 | Interpretierbarkeit | ✅ Vollständig | ❌ Blackbox |
 
+![Variable Importance (Reduced)](../plots/rf_importance_reduced.png)
+
 ### Ergebnis (Reduced)
 
 | Metrik | Wert |
@@ -243,14 +247,40 @@ RF erreicht auf der Reduced-Variante **perfekte Klassifikation** (0 FP, 0 FN) �
 
 ---
 
-<!-- note: Hier ist der finale Vergleich. Wichtig: Nicht nur Accuracy vergleichen, sondern vor allem FP (tödlich) und FN (harmlos). RF Reduced erreicht 0 FP, 0 FN, 100% Accuracy — die besten Metriken. Cost-sensitive Tree ebenfalls 0 FP, aber 20 FN, dafür voll interpretierbar. Die LogReg ist aus didaktischen Gründen dabei (zeigt Perfect Separation). -->
+<!-- note: Was lernen wir aus dem Random Forest? Dass Ensemble-Methoden die maximale Performance liefern – aber um den Preis der Interpretierbarkeit. Für die Forschung und maximale Genauigkeit ist RF die erste Wahl. Für die Praxis (Pilzsammler) ist der erklärbare Tree die bessere Wahl, weil er die gleiche Sicherheit bei voller Transparenz bietet. -->
+
+## Methode 3: Random Forest – Fazit
+
+### Was lernen wir daraus?
+
+- RF erreicht **perfekte Klassifikation** auf Reduced: 0 FP, 0 FN, 100% Accuracy, AUC = 1,000
+- Ensemble aus 500 Bäumen + zufällige Merkmalsauswahl (`mtry = 11`) fangen alle Muster
+- Variable Importance bestätigt: `gill_color` + `stalk_color` dominieren
+
+### Maximale Performance vs. Interpretierbarkeit
+
+| Kriterium | Cost-sensitive Tree | Random Forest |
+|---|---|---|
+| FP (TOD) | **0** | **0** |
+| FN | 20 | **0** |
+| Accuracy | 99,18% | **100%** |
+| Interpretierbar | **✅ Ja** | ❌ Nein |
+| Empfehlung | **Praxis** | Forschung / Second Opinion |
+
+> **Fazit:** RF ist leistungsstärker, aber für die Praxis nicht nötig. Der erklärbare Tree erreicht das gleiche Sicherheitsziel (0 FP).
+
+---
+
+<!-- note: Hier ist der finale Vergleich auf der Reduced-Variante. Wichtig: Nicht nur Accuracy vergleichen, sondern vor allem FP (tödlich) und FN (harmlos). Der Modellvergleich fasst alle drei Methoden auf einen Blick zusammen. -->
 
 ## Modellvergleich
+
+![Modellvergleich: Fehleranzahl und Gütemaße](../plots/model_comparison.png)
 
 **Reduced-Variante (19 Features, Pilzsammler-Szenario):**
 
 | Modell | FP (TOD) | FN | Accuracy | Specificity | Interpretierbar |
-| LogReg (glm) | ❌ 1262* | 0 | 0,12%* | 0,26%* | ❌ (nicht konvergiert) |
+| LogReg (glm) | ❌ 1172* | 1262* | 0,12%* | 0,26%* | ❌ (nicht konvergiert) |
 | **Tree Cost-sensitive** | **✅ 0** | 20 | 99,18% | **100%** | **✅ Voll** |
 | Tree Standard | 2 | 4 | 99,75% | 99,83% | ✅ Voll |
 | **RF Reduced** | **✅ 0** | **0** | **100%** | **100%** | ❌ (Blackbox) |
@@ -261,33 +291,27 @@ RF erreicht auf der Reduced-Variante **perfekte Klassifikation** (0 FP, 0 FN) �
 
 ---
 
-<!-- note: Das Fazit soll klar die Empfehlung aussprechen. Der Cost-sensitive Tree ist das beste Modell für dieses Szenario, weil: (1) 0 tödliche Fehler, (2) voll interpretierbar (wichtig für Präsentation), (3) robust durch cp-Tuning + 1-SE-Regel. Der Random Forest dient als "second opinion" für maximale Accuracy. Die LogReg ist kein Fehler – sie zeigt wertvolles Methodenverständnis. -->
+<!-- note: Das Fazit fasst die übergreifenden Erkenntnisse zusammen. Nicht mehr pro Modell (das hatten wir schon), sondern methodenübergreifend. Die Kernbotschaft: Cost-sensitive Tree für die Praxis, RF als Benchmark. Und: Methodenwahl hängt von Datenstruktur UND Anwendungskontext ab. -->
 
 ## Fazit
 
-### Drei Methoden, ein klares Ergebnis
-
-| Modell | Status |
-|---|---|---|
-| **Logistische Regression** | ❌ Ungeeignet – Perfect Separation (Ch. 4.1) |
-| **Decision Tree (Cost-sensitive)** | ✅ **Empfohlen für Praxis** – 0 FP, erklärbar |
-| **Random Forest** | ✅ **Beste Metriken** – perfekte Klassifikation, aber Blackbox |
-
-### Zwei Wege zum Ziel
-
-| Kriterium | Cost-sensitive Tree | Random Forest |
-|-----------|:------------------:|:-------------:|
-| FP (TOD) | **0** | **0** |
-| FN | 20 | **0** |
-| Interpretierbar | **Ja** | Nein |
-| Empfehlung | **Praxis (erklärbar)** | **Forschung (max. Performance)** |
-
 ### Methodische Erkenntnisse
 
-- Nicht jedes Verfahren passt zu jedem Datensatz (LogReg ≠ Mushroom)
-- **Asymmetrische Kosten** müssen ins Modell eingebaut werden (Loss Matrix)
-- **Einfach + erklärbar** ist oft besser als komplex + Blackbox
-- Ensemble-Methoden (RF) liefern beste Metriken, aber auf Kosten der Transparenz
+| Erkenntnis | Bedeutung für diese Arbeit |
+|---|---|
+| **Methodenwahl ≠ Datensatz** | LogReg scheitert an nominalen Daten mit deterministischen Levels |
+| **Asymmetrische Kosten** | Loss Matrix im Modell (nicht nachträglich) – nur so wird FP vermieden |
+| **Einfach + erklärbar > komplex + Blackbox** | Cost-sensitive Tree (0 FP) ist RF (0 FP) für die Praxis vorzuziehen |
+| **Datenverständnis vor Modellierung** | Deskriptive Analyse zeigte: Reduced-Variante ist der relevante Use Case |
+
+### Zusammenfassung
+
+| Aspekt | Gewähltes Modell | Begründung |
+|---|---|---|
+| **Praxis (Pilzsammler)** | **Decision Tree (Cost-sensitive)** | 0 FP, interpretierbar, robust (1-SE) |
+| **Forschung (max. Performance)** | **Random Forest** | 0 FP, 0 FN, 100% Accuracy |
+
+> **Fazit:** Der Cost-sensitive Decision Tree ist die **Empfehlung für die Praxis** – er kombiniert 0 tödliche Fehler mit voller Interpretierbarkeit. Random Forest als "Second Opinion" für maximale Genauigkeit.
 
 ---
 
