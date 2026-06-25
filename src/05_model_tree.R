@@ -120,7 +120,7 @@ cat(sprintf("%-30s %12.4f %12.4f\n", "Specificity",
 
 # --- Plot cost-sensitive tree ---
 dir.create("docs/plots", recursive = TRUE, showWarnings = FALSE)
-png("docs/plots/tree_plot.png", width = 1000, height = 700)
+png("docs/plots/tree_plot.png", width = 2000, height = 1400, res = 150)
 rpart.plot(pruned_b, type = 2, extra = 104,
            box.palette = c("red", "green"),
            main = "Decision Tree (Cost-sensitive, FN 10x) — Reduced Variant")
