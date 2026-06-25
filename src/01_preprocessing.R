@@ -134,7 +134,8 @@ cat("Removed constant feature: veil_type\n")
 # --- 6. Save full variant (21 features, veil_type removed) ---
 dir.create("data/processed", recursive = TRUE, showWarnings = FALSE)
 saveRDS(data, "data/processed/mushroom_clean_full.rds")
-cat("Saved full variant (21 features): data/processed/mushroom_clean_full.rds\n")
+write.csv(data, "data/processed/mushroom_clean_full.csv", row.names = FALSE)
+cat("Saved full variant (21 features): data/processed/mushroom_clean_full.rds + .csv\n")
 
 # --- 7. Save reduced variant (without odor + spore_print_color) ---
 # Reasoning: Geruch ist subjektiv/inkonsistent, Sporenabdruck im Feld nicht praktikabel
@@ -142,7 +143,8 @@ data_reduced <- data
 data_reduced$odor <- NULL
 data_reduced$spore_print_color <- NULL
 saveRDS(data_reduced, "data/processed/mushroom_clean_reduced.rds")
-cat("Saved reduced variant (19 features): data/processed/mushroom_clean_reduced.rds\n")
+write.csv(data_reduced, "data/processed/mushroom_clean_reduced.csv", row.names = FALSE)
+cat("Saved reduced variant (19 features): data/processed/mushroom_clean_reduced.rds + .csv\n")
 
 cat("\n--- Summary ---\n")
 cat("Full variant dimensions:   ", nrow(data), "x", ncol(data), "\n")
