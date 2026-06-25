@@ -2,9 +2,8 @@
 # Load raw mushroom data, clean, map factor levels, impute missing values
 
 # --- 1. Read raw data ---
-setwd("/home/t4w/development/ml-project/")
-getwd()
-
+# Annahme: Skript wird aus dem Projektroot ausgeführt
+# (via Rscript src/01_preprocessing.R oder via 00_Main.R)
 raw <- read.csv("mushroom/agaricus-lepiota.data",
                 header = FALSE,
                 sep = ",",
