@@ -9,6 +9,18 @@ library(pROC)
 
 set.seed(467)
 
+# Schalter: TRUE = Sub-Script-Output anzeigen, FALSE = nur >>> MAIN: Ausgaben
+VERBOSE <- FALSE
+
+quiet_source <- function(file, verbose = FALSE) {
+  if (verbose) source(file) else invisible(capture.output(source(file)))
+}
+
+show_plot <- function(path) {
+  full_path <- file.path(getwd(), path)
+  if (file.exists(full_path)) utils::browseURL(full_path)
+}
+
 cat("\n")
 cat(rep("=", 62), sep = "", fill = TRUE)
 cat(">>> MAIN: ML-Projekt Mushroom Classification -- Gesamtanalyse\n")
@@ -23,23 +35,28 @@ cat(">>> MAIN: SCHRITT 1 -- DATENVORBEREITUNG (01_preprocessing.R)\n")
 cat(rep("=", 62), sep = "", fill = TRUE)
 cat("\n")
 
-source("src/01_preprocessing.R")
+quiet_source("src/01_preprocessing.R", VERBOSE)
 
-full    <- readRDS("data/processed/mushroom_clean_full.rds")
+full <- readRDS("data/processed/mushroom_clean_full.rds")
 reduced <- readRDS("data/processed/mushroom_clean_reduced.rds")
 
 cat("\n")
 cat(rep("-", 62), sep = "", fill = TRUE)
 cat(">>> MAIN: Zusammenfassung Datenvorbereitung\n")
 cat(rep("-", 62), sep = "", fill = TRUE)
-cat(sprintf("  Full-Variante:    %d Zeilen, %d Merkmale (alle außer veil_type)\n",
-            nrow(full), ncol(full) - 1))
-cat(sprintf("  Reduced-Variante: %d Zeilen, %d Merkmale (ohne odor + spore_print_color)\n",
-            nrow(reduced), ncol(reduced) - 1))
+cat(sprintf(
+  "  Full-Variante:    %d Zeilen, %d Merkmale (alle außer veil_type)\n",
+  nrow(full), ncol(full) - 1
+))
+cat(sprintf(
+  "  Reduced-Variante: %d Zeilen, %d Merkmale (ohne odor + spore_print_color)\n",
+  nrow(reduced), ncol(reduced) - 1
+))
 cat(sprintf("  veil_type: konstant -> entfernt (Ch. 3.1)\n"))
 cat(sprintf("  stalk_root: 30x NA -> modalimputiert mit 'bulbous'\n"))
 cat("\n")
-
+# summary(full)
+# summary(reduced)
 # ======================================================================
 # SCHRITT 2: DESKRIPTIVE ANALYSE
 # ======================================================================
@@ -48,7 +65,7 @@ cat(">>> MAIN: SCHRITT 2 -- DESKRIPTIVE ANALYSE (02_descriptive_analysis.R)\n")
 cat(rep("=", 62), sep = "", fill = TRUE)
 cat("\n")
 
-source("src/02_descriptive_analysis.R")
+quiet_source("src/02_descriptive_analysis.R", VERBOSE)
 
 # Cramers's V für die Reduced-Variante berechnen (damit odor/spore nicht dominieren)
 data <- readRDS("data/processed/mushroom_clean_reduced.rds")
@@ -86,14 +103,18 @@ for (feat in names(cv_sorted[1:6])) {
   edible_only <- rownames(p)[p[, "edible"] == 1]
   poisonous_only <- rownames(p)[p[, "poisonous"] == 1]
   parts <- c()
-  if (length(edible_only) > 0)
+  if (length(edible_only) > 0) {
     parts <- c(parts, sprintf("100%% essbar: %s", paste(edible_only, collapse = ", ")))
-  if (length(poisonous_only) > 0)
+  }
+  if (length(poisonous_only) > 0) {
     parts <- c(parts, sprintf("100%% giftig: %s", paste(poisonous_only, collapse = ", ")))
-  if (length(parts) > 0)
+  }
+  if (length(parts) > 0) {
     cat(sprintf("  %-28s -> %s\n", feat, paste(parts, collapse = " | ")))
+  }
 }
 cat("\n")
+show_plot("docs/plots/cramers_v.png")
 
 # ======================================================================
 # SCHRITT 3: TRAIN/TEST SPLIT
@@ -103,27 +124,31 @@ cat(">>> MAIN: SCHRITT 3 -- TRAIN/TEST SPLIT (03_train_test_split.R)\n")
 cat(rep("=", 62), sep = "", fill = TRUE)
 cat("\n")
 
-source("src/03_train_test_split.R")
+quiet_source("src/03_train_test_split.R", VERBOSE)
 
 train <- readRDS("data/processed/train_reduced.rds")
-test  <- readRDS("data/processed/test_reduced.rds")
+test <- readRDS("data/processed/test_reduced.rds")
 
 cat("\n")
 cat(rep("-", 62), sep = "", fill = TRUE)
 cat(">>> MAIN: Stratifizierter 70/30 Split (Reduced-Variante)\n")
 cat(rep("-", 62), sep = "", fill = TRUE)
-cat(sprintf("  Train: %4d Zeilen (edible: %d = %.1f%% | poisonous: %d = %.1f%%)\n",
-            nrow(train),
-            sum(train$class == "edible"),
-            mean(train$class == "edible") * 100,
-            sum(train$class == "poisonous"),
-            mean(train$class == "poisonous") * 100))
-cat(sprintf("  Test:  %4d Zeilen (edible: %d = %.1f%% | poisonous: %d = %.1f%%)\n",
-            nrow(test),
-            sum(test$class == "edible"),
-            mean(test$class == "edible") * 100,
-            sum(test$class == "poisonous"),
-            mean(test$class == "poisonous") * 100))
+cat(sprintf(
+  "  Train: %4d Zeilen (edible: %d = %.1f%% | poisonous: %d = %.1f%%)\n",
+  nrow(train),
+  sum(train$class == "edible"),
+  mean(train$class == "edible") * 100,
+  sum(train$class == "poisonous"),
+  mean(train$class == "poisonous") * 100
+))
+cat(sprintf(
+  "  Test:  %4d Zeilen (edible: %d = %.1f%% | poisonous: %d = %.1f%%)\n",
+  nrow(test),
+  sum(test$class == "edible"),
+  mean(test$class == "edible") * 100,
+  sum(test$class == "poisonous"),
+  mean(test$class == "poisonous") * 100
+))
 cat(sprintf("  Klassen-Verhältnis bleibt durch Stratifikation erhalten.\n"))
 cat("\n")
 
@@ -135,7 +160,7 @@ cat(">>> MAIN: SCHRITT 4 -- METHODE 1: LOGISTISCHE REGRESSION (04_model_logistic
 cat(rep("=", 62), sep = "", fill = TRUE)
 cat("\n")
 
-source("src/04_model_logistic.R")
+quiet_source("src/04_model_logistic.R", VERBOSE)
 
 log_model <- readRDS("data/processed/logistic_model.rds")
 s <- summary(log_model)
@@ -161,14 +186,18 @@ top_coefs <- names(coefs_sorted[1:3])
 cat("  Explodierende Koeffizienten:\n")
 for (nm in top_coefs) {
   se <- s$coefficients[nm, "Std. Error"]
-  cat(sprintf("    %-40s Estimate = %8.1f, SE = %8.1e (SE/Est = %.0f)\n",
-              nm, coefs[nm], se, abs(se / coefs[nm])))
+  cat(sprintf(
+    "    %-40s Estimate = %8.1f, SE = %8.1e (SE/Est = %.0f)\n",
+    nm, coefs[nm], se, abs(se / coefs[nm])
+  ))
 }
 cat("\n")
 
 # Deviance
-cat(sprintf("  Residual Deviance: %.2e (Null Deviance: %.2f)\n",
-            s$deviance, s$null.deviance))
+cat(sprintf(
+  "  Residual Deviance: %.2e (Null Deviance: %.2f)\n",
+  s$deviance, s$null.deviance
+))
 cat(sprintf("  -> Residual Deviance ~= 0: degenerierter Fit\n\n"))
 
 # Confusion Matrix
@@ -181,8 +210,10 @@ TP <- cm["edible", "edible"]
 TN <- cm["poisonous", "poisonous"]
 acc <- (TP + TN) / sum(cm)
 
-cat(sprintf("  Confusion Matrix: FP = %d (TOD), FN = %d, Accuracy = %.2f%%\n",
-            FP, FN, acc * 100))
+cat(sprintf(
+  "  Confusion Matrix: FP = %d (TOD), FN = %d, Accuracy = %.2f%%\n",
+  FP, FN, acc * 100
+))
 cat("  -> LogReg ist ungeeignet für diesen Datensatz (Ch. 4.1)\n")
 cat("\n")
 
@@ -194,10 +225,10 @@ cat(">>> MAIN: SCHRITT 5 -- METHODE 2: DECISION TREE (05_model_tree.R)\n")
 cat(rep("=", 62), sep = "", fill = TRUE)
 cat("\n")
 
-source("src/05_model_tree.R")
+quiet_source("src/05_model_tree.R", VERBOSE)
 
-tree_std   <- readRDS("data/processed/tree_model.rds")
-tree_cost  <- readRDS("data/processed/tree_model_cost.rds")
+tree_std <- readRDS("data/processed/tree_model.rds")
+tree_cost <- readRDS("data/processed/tree_model_cost.rds")
 
 cat("\n")
 cat(rep("-", 62), sep = "", fill = TRUE)
@@ -226,21 +257,26 @@ spec_cost <- TN_cost / (TN_cost + FP_cost)
 
 cat("\n")
 cat(sprintf("  %-25s %20s %20s\n", "", "Standard (1:1)", "Cost-sensitive (10x)"))
-cat(sprintf("  %-25s %20s %20s\n", "", paste(rep("-", 18), collapse = ""),
-            paste(rep("-", 20), collapse = "")))
+cat(sprintf(
+  "  %-25s %20s %20s\n", "", paste(rep("-", 18), collapse = ""),
+  paste(rep("-", 20), collapse = "")
+))
 cat(sprintf("  %-25s %18d %20d\n", "FP (TOD)", FP_std, FP_cost))
 cat(sprintf("  %-25s %18d %20d\n", "FN (harmlos)", FN_std, FN_cost))
 cat(sprintf("  %-25s %17.2f%% %19.2f%%\n", "Accuracy", acc_std * 100, acc_cost * 100))
 cat(sprintf("  %-25s %17.2f%% %19.2f%%\n", "Specificity", spec_std * 100, spec_cost * 100))
 cat("\n")
-cat(sprintf("  Splits Standard: %d  |  Splits Cost: %d\n",
-            nrow(tree_std$frame) - 1, nrow(tree_cost$frame) - 1))
+cat(sprintf(
+  "  Splits Standard: %d  |  Splits Cost: %d\n",
+  nrow(tree_std$frame) - 1, nrow(tree_cost$frame) - 1
+))
 cat(sprintf("  Cost-sensitive: 0 tödliche Fehler -> Praxis-Empfehlung\n"))
 
 # Wurzel-Split
 root_var_cost <- as.character(tree_cost$frame$var[1])
 cat(sprintf("  Wurzel-Split (Cost): %s\n", root_var_cost))
 cat("\n")
+show_plot("docs/plots/tree_plot.png")
 
 # ======================================================================
 # SCHRITT 6: RANDOM FOREST
@@ -250,7 +286,7 @@ cat(">>> MAIN: SCHRITT 6 -- METHODE 3: RANDOM FOREST (06_model_rf.R)\n")
 cat(rep("=", 62), sep = "", fill = TRUE)
 cat("\n")
 
-source("src/06_model_rf.R")
+quiet_source("src/06_model_rf.R", VERBOSE)
 
 rf <- readRDS("data/processed/rf_model_reduced.rds")
 
@@ -285,10 +321,13 @@ cat("  Variable Importance (Top 5, MeanDecreaseGini):\n")
 imp <- importance(rf)
 imp_sorted <- imp[order(imp[, "MeanDecreaseGini"], decreasing = TRUE), , drop = FALSE]
 for (i in 1:min(5, nrow(imp_sorted))) {
-  cat(sprintf("    %d. %-30s %.1f\n",
-              i, rownames(imp_sorted)[i], imp_sorted[i, "MeanDecreaseGini"]))
+  cat(sprintf(
+    "    %d. %-30s %.1f\n",
+    i, rownames(imp_sorted)[i], imp_sorted[i, "MeanDecreaseGini"]
+  ))
 }
 cat("\n")
+show_plot("docs/plots/rf_importance_reduced.png")
 
 # ======================================================================
 # SCHRITT 7: MODELLVERGLEICH + ZUSAMMENFASSUNG
@@ -304,20 +343,30 @@ cat(rep("-", 62), sep = "", fill = TRUE)
 cat("\n")
 
 # Tabelle
-header <- sprintf("  %-28s %10s %10s %12s %12s",
-                  "Modell", "FP (TOD)", "FN", "Accuracy", "Specificity")
+header <- sprintf(
+  "  %-28s %10s %10s %12s %12s",
+  "Modell", "FP (TOD)", "FN", "Accuracy", "Specificity"
+)
 cat(header, "\n")
 cat(sprintf("  %s\n", paste(rep("--", 75), collapse = "")))
 
 log_spec <- TN / (TN + FP)
-cat(sprintf("  %-28s %10d %10d %11.2f%% %11.2f%%\n",
-            "Logistische Regression", FP, FN, acc * 100, log_spec * 100))
-cat(sprintf("  %-28s %10d %10d %11.2f%% %11.2f%%\n",
-            "Decision Tree (Standard)", FP_std, FN_std, acc_std * 100, spec_std * 100))
-cat(sprintf("  %-28s %10d %10d %11.2f%% %11.2f%%\n",
-            "Decision Tree (Cost-sensitive)", FP_cost, FN_cost, acc_cost * 100, spec_cost * 100))
-cat(sprintf("  %-28s %10d %10d %11.2f%% %11.2f%%\n",
-            "Random Forest (Reduced)", FP_rf, FN_rf, acc_rf * 100, spec_rf * 100))
+cat(sprintf(
+  "  %-28s %10d %10d %11.2f%% %11.2f%%\n",
+  "Logistische Regression", FP, FN, acc * 100, log_spec * 100
+))
+cat(sprintf(
+  "  %-28s %10d %10d %11.2f%% %11.2f%%\n",
+  "Decision Tree (Standard)", FP_std, FN_std, acc_std * 100, spec_std * 100
+))
+cat(sprintf(
+  "  %-28s %10d %10d %11.2f%% %11.2f%%\n",
+  "Decision Tree (Cost-sensitive)", FP_cost, FN_cost, acc_cost * 100, spec_cost * 100
+))
+cat(sprintf(
+  "  %-28s %10d %10d %11.2f%% %11.2f%%\n",
+  "Random Forest (Reduced)", FP_rf, FN_rf, acc_rf * 100, spec_rf * 100
+))
 
 cat("\n")
 cat(rep("=", 62), sep = "", fill = TRUE)
