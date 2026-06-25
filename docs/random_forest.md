@@ -1,4 +1,4 @@
-# Random Forest — Modellanalyse
+# Random Forest -- Modellanalyse
 
 ## 1. Funktionsweise (Ch. 4.1, Ensemble-Erweiterung)
 
@@ -32,11 +32,11 @@ RF liefert zwei Importance-Maße:
 
 ## 2. mtry-Tuning mit 10-fold CV
 
-Der wichtigste Parameter in RF ist $m_{try}$ — die Anzahl der Merkmale, die an jedem Split zufällig ausgewählt werden:
+Der wichtigste Parameter in RF ist $m_{try}$ -- die Anzahl der Merkmale, die an jedem Split zufällig ausgewählt werden:
 
 | Features | $m_{try}$ Default ($\sqrt{p}$) | $m_{try}$ getestet | Beste $m_{try}$ |
 |----------|-------------------------------|-------------------|-----------------|
-| 19 | 4 | 2–12 | **11** |
+| 19 | 4 | 2--12 | **11** |
 
 ### 2.1 CV-Ergebnisse (Reduced)
 
@@ -50,7 +50,7 @@ mtry =  7: CV Accuracy = 0.9665
 mtry =  8: CV Accuracy = 0.9672
 mtry =  9: CV Accuracy = 0.9672
 mtry = 10: CV Accuracy = 0.9675
-mtry = 11: CV Accuracy = 0.9700  ← best
+mtry = 11: CV Accuracy = 0.9700  <- best
 mtry = 12: CV Accuracy = 0.9695
 ```
 
@@ -70,15 +70,15 @@ Der OOB-Fehler fällt bereits nach ~50 Bäumen auf nahe 0% und stabilisiert sich
 
 | Rang | Merkmal | Mean Decrease Gini | Bedeutung |
 |------|---------|-------------------|-----------|
-| 1 | `gill_color` | 691.3 | Lamellenfarbe — stärkster Prädiktor |
+| 1 | `gill_color` | 691.3 | Lamellenfarbe -- stärkster Prädiktor |
 | 2 | `gill_size` | 388.9 | Lamellengröße |
 | 3 | `stalk_surface_above_ring` | 303.0 | Stieloberfläche über Ring |
 | 4 | `ring_type` | 285.8 | Ring-Typ |
 | 5 | `population` | 247.1 | Wuchsform |
 
-Die Importance-Reihenfolge bestätigt die Cramér's V-Analyse: `gill_color` und `gill_size` dominieren die Klassifikation. `stalk_surface_above_ring` und `ring_type` sind ebenfalls wichtige Merkmale — beide haben starke Assoziationen mit Giftigkeit (manche Ring-Typen, z.B. `large`, kommen fast nur bei giftigen Pilzen vor).
+Die Importance-Reihenfolge bestätigt die Cramers's V-Analyse: `gill_color` und `gill_size` dominieren die Klassifikation. `stalk_surface_above_ring` und `ring_type` sind ebenfalls wichtige Merkmale -- beide haben starke Assoziationen mit Giftigkeit (manche Ring-Typen, z.B. `large`, kommen fast nur bei giftigen Pilzen vor).
 
-**Schwächste Merkmale:** `veil_color`, `gill_attachment` — diese haben kaum trennende Kraft und könnten theoretisch entfernt werden.
+**Schwächste Merkmale:** `veil_color`, `gill_attachment` -- diese haben kaum trennende Kraft und könnten theoretisch entfernt werden.
 
 ## 4. Modellergebnisse
 
@@ -89,7 +89,7 @@ Die Importance-Reihenfolge bestätigt die Cramér's V-Analyse: `gill_color` und 
 | **Vorhergesagt edible** | 1262 (TP) | **0 (FP = TOD)** |
 | **Vorhergesagt poisonous** | 0 (FN) | 1175 (TN) |
 
-RF erreicht **perfekte Klassifikation** auf dem Testdatensatz (2.437 Instanzen) — **0 tödliche Fehler** (FP), **0 harmlose Fehlalarme** (FN).
+RF erreicht **perfekte Klassifikation** auf dem Testdatensatz (2.437 Instanzen) -- **0 tödliche Fehler** (FP), **0 harmlose Fehlalarme** (FN).
 
 ### 4.2 Metriken
 
@@ -100,14 +100,14 @@ RF erreicht **perfekte Klassifikation** auf dem Testdatensatz (2.437 Instanzen) 
 | Specificity | **100,00%** |
 | Precision | **100,00%** |
 | Balanced Accuracy | **100,00%** |
-| FN (giftig→essbar=TOD) | **0** |
-| FP (essbar→giftig) | **0** |
+| FN (giftig->essbar=TOD) | **0** |
+| FP (essbar->giftig) | **0** |
 | AUC | **1,000** |
 | OOB Error | **0,00%** |
 
 ### 4.3 ROC-Kurve
 
-Die ROC-Kurve erreicht AUC = 1,000 — der perfekte Klassifikator. Der Cost-sensitive Tree hatte ebenfalls AUC = 1,000 (Specificity = 100%).
+Die ROC-Kurve erreicht AUC = 1,000 -- der perfekte Klassifikator. Der Cost-sensitive Tree hatte ebenfalls AUC = 1,000 (Specificity = 100%).
 
 ## 5. Vergleich: Random Forest vs. Decision Tree
 
@@ -132,7 +132,7 @@ Der Einzelbaum (selbst Cost-sensitive) erreicht "nur" Spezifität 100% mit 20 FN
 
 1. **Ensemble-Effekt:** 500 Bäume mitteln sich zu einer robusteren Entscheidungsgrenze
 2. **Zufällige Merkmalsauswahl:** Jeder Baum sieht andere Feature-Kombinationen und kann schwächere Signale nutzen
-3. **Tiefe Bäume:** RF wächst Bäume ohne Pruning — kann auch sehr spezifische Subgruppen lernen
+3. **Tiefe Bäume:** RF wächst Bäume ohne Pruning -- kann auch sehr spezifische Subgruppen lernen
 
 ## 6. OOB Error und Overfitting
 
@@ -145,7 +145,7 @@ Der OOB-Fehler von **0,00%** zeigt, dass RF nicht überangepasst ist:
 
 | Modell | FP (tödlich) | FN (harmlos) | Interpretierbar | Empfehlung |
 |--------|-------------|-------------|----------------|------------|
-| **RF Reduced** | **0** | **0** | ❌ | **Beste Metriken** |
+| **RF Reduced** | **0** | **0** | [NEIN] | **Beste Metriken** |
 | **Tree Cost-sensitive** | **0** | 20 | **Ja** | **Beste Transparenz** |
 | Tree Std (1:1) | 2 | 4 | **Ja** | Baseline |
 

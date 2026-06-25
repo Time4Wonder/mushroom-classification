@@ -1,11 +1,11 @@
-# Datenbeschreibung — UCI Mushroom Dataset
+# Datenbeschreibung -- UCI Mushroom Dataset
 
 ## Überblick
 
-- **Quelle**: [UCI Machine Learning Repository – Mushroom Dataset](https://archive.ics.uci.edu/dataset/73/mushroom)
+- **Quelle**: [UCI Machine Learning Repository -- Mushroom Dataset](https://archive.ics.uci.edu/dataset/73/mushroom)
 - **Anzahl Instanzen**: 8.124
 - **Anzahl Merkmale**: 22 (alle nominal)
-- **Zielvariable**: Binäre Klassifikation — Genießbarkeit (essbar / giftig)
+- **Zielvariable**: Binäre Klassifikation -- Genießbarkeit (essbar / giftig)
 - **Fehlende Werte**: ursprünglich nur in `stalk_root` (Markierung `?`), wurden mit dem Modalwert imputiert
 
 ## Zwei Varianten
@@ -19,14 +19,14 @@
 
 ## Merkmale im Detail
 
-### `class` — Zielvariable (Genießbarkeit)
+### `class` -- Zielvariable (Genießbarkeit)
 
 | Ausprägung | Bedeutung |
 |---|---|
 | `edible` | essbar |
 | `poisonous` | giftig |
 
-### `cap_shape` — Hutform
+### `cap_shape` -- Hutform
 
 | Ausprägung | Bedeutung |
 |---|---|
@@ -37,7 +37,7 @@
 | `knobbed` | knubbelig / mit Höcker |
 | `sunken` | eingesenkt |
 
-### `cap_surface` — Hutoberfläche
+### `cap_surface` -- Hutoberfläche
 
 | Ausprägung | Bedeutung |
 |---|---|
@@ -46,7 +46,7 @@
 | `scaly` | schuppig |
 | `smooth` | glatt |
 
-### `cap_color` — Hutfarbe
+### `cap_color` -- Hutfarbe
 
 | Ausprägung | Bedeutung |
 |---|---|
@@ -61,14 +61,14 @@
 | `white` | weiß |
 | `yellow` | gelb |
 
-### `bruises` — Druckstellen
+### `bruises` -- Druckstellen
 
 | Ausprägung | Bedeutung |
 |---|---|
 | `bruises` | Druckstellen vorhanden |
 | `no` | keine Druckstellen |
 
-### `odor` — Geruch [ENTFERNT in Reduced-Variante]
+### `odor` -- Geruch [ENTFERNT in Reduced-Variante]
 
 | Ausprägung | Bedeutung |
 |---|---|
@@ -84,7 +84,7 @@
 
 **Entfernt in Reduced-Variante**: Geruch ist subjektiv, verfliegt bei Trocknung und ist als Merkmal für ein allgemeines Klassifikationssystem inkonsistent.
 
-### `gill_attachment` — Lamellenansatz
+### `gill_attachment` -- Lamellenansatz
 
 | Ausprägung | Bedeutung |
 |---|---|
@@ -93,7 +93,7 @@
 | `free` | frei (nicht angewachsen) |
 | `notched` | ausgebuchtet / gekerbt |
 
-### `gill_spacing` — Lamellenabstand
+### `gill_spacing` -- Lamellenabstand
 
 | Ausprägung | Bedeutung |
 |---|---|
@@ -101,14 +101,14 @@
 | `crowded` | gedrängt / sehr eng |
 | `distant` | entfernt stehend |
 
-### `gill_size` — Lamellengröße
+### `gill_size` -- Lamellengröße
 
 | Ausprägung | Bedeutung |
 |---|---|
 | `broad` | breit |
 | `narrow` | schmal |
 
-### `gill_color` — Lamellenfarbe
+### `gill_color` -- Lamellenfarbe
 
 | Ausprägung | Bedeutung |
 |---|---|
@@ -125,14 +125,14 @@
 | `white` | weiß |
 | `yellow` | gelb |
 
-### `stalk_shape` — Stielform
+### `stalk_shape` -- Stielform
 
 | Ausprägung | Bedeutung |
 |---|---|
 | `enlarging` | zur Basis hin verdickt |
 | `tapering` | zur Basis hin verjüngt |
 
-### `stalk_root` — Stielbasis
+### `stalk_root` -- Stielbasis
 
 | Ausprägung | Bedeutung |
 |---|---|
@@ -145,7 +145,7 @@
 
 **Anmerkung**: Dieses Merkmal enthielt ursprünglich fehlende Werte (kodiert als `?`). Diese wurden mit dem Modalwert (`bulbous`) imputiert.
 
-### `stalk_surface_above_ring` — Stieloberfläche oberhalb des Rings
+### `stalk_surface_above_ring` -- Stieloberfläche oberhalb des Rings
 
 | Ausprägung | Bedeutung |
 |---|---|
@@ -154,7 +154,7 @@
 | `silky` | seidig |
 | `smooth` | glatt |
 
-### `stalk_surface_below_ring` — Stieloberfläche unterhalb des Rings
+### `stalk_surface_below_ring` -- Stieloberfläche unterhalb des Rings
 
 | Ausprägung | Bedeutung |
 |---|---|
@@ -163,7 +163,7 @@
 | `silky` | seidig |
 | `smooth` | glatt |
 
-### `stalk_color_above_ring` — Stielfarbe oberhalb des Rings
+### `stalk_color_above_ring` -- Stielfarbe oberhalb des Rings
 
 | Ausprägung | Bedeutung |
 |---|---|
@@ -177,7 +177,7 @@
 | `white` | weiß |
 | `yellow` | gelb |
 
-### `stalk_color_below_ring` — Stielfarbe unterhalb des Rings
+### `stalk_color_below_ring` -- Stielfarbe unterhalb des Rings
 
 | Ausprägung | Bedeutung |
 |---|---|
@@ -191,16 +191,16 @@
 | `white` | weiß |
 | `yellow` | gelb |
 
-### `veil_type` — Velum-Typ (Hülltyp) [ENTFERNT]
+### `veil_type` -- Velum-Typ (Hülltyp) [ENTFERNT]
 
 | Ausprägung | Bedeutung |
 |---|---|
 | `partial` | Teilvelum (Ring) |
 | `universal` | Universalvelum (Scheide) |
 
-**Anmerkung**: Im Datensatz kommt ausschließlich `partial` vor — dieses Merkmal ist konstant und wurde daher während der Datenaufbereitung (Schritt 5 in `01_preprocessing.R`) gemäß Kapitel 3.1 der Vorlesung (Entfernen irrelevanter Daten) aus dem Datensatz entfernt.
+**Anmerkung**: Im Datensatz kommt ausschließlich `partial` vor -- dieses Merkmal ist konstant und wurde daher während der Datenaufbereitung (Schritt 5 in `01_preprocessing.R`) gemäß Kapitel 3.1 der Vorlesung (Entfernen irrelevanter Daten) aus dem Datensatz entfernt.
 
-### `veil_color` — Velum-Farbe (Hüllfarbe)
+### `veil_color` -- Velum-Farbe (Hüllfarbe)
 
 | Ausprägung | Bedeutung |
 |---|---|
@@ -209,7 +209,7 @@
 | `white` | weiß |
 | `yellow` | gelb |
 
-### `ring_number` — Ringanzahl
+### `ring_number` -- Ringanzahl
 
 | Ausprägung | Bedeutung |
 |---|---|
@@ -217,7 +217,7 @@
 | `one` | ein Ring |
 | `two` | zwei Ringe |
 
-### `ring_type` — Ring-Typ
+### `ring_type` -- Ring-Typ
 
 | Ausprägung | Bedeutung |
 |---|---|
@@ -230,7 +230,7 @@
 | `sheathing` | scheidig |
 | `zone` | zonenförmig |
 
-### `spore_print_color` — Sporenpulverfarbe [ENTFERNT in Reduced-Variante]
+### `spore_print_color` -- Sporenpulverfarbe [ENTFERNT in Reduced-Variante]
 
 | Ausprägung | Bedeutung |
 |---|---|
@@ -244,9 +244,9 @@
 | `white` | weiß |
 | `yellow` | gelb |
 
-**Entfernt in Reduced-Variante**: Ein Sporenabdruck benötigt mehrere Stunden — im Wald/Pilzgeschäft nicht praktikabel. Daher für ein realistisches Szenario ungeeignet.
+**Entfernt in Reduced-Variante**: Ein Sporenabdruck benötigt mehrere Stunden -- im Wald/Pilzgeschäft nicht praktikabel. Daher für ein realistisches Szenario ungeeignet.
 
-### `population` — Wuchsform / Population
+### `population` -- Wuchsform / Population
 
 | Ausprägung | Bedeutung |
 |---|---|
@@ -257,7 +257,7 @@
 | `several` | mehrere |
 | `solitary` | einzeln stehend |
 
-### `habitat` — Lebensraum
+### `habitat` -- Lebensraum
 
 | Ausprägung | Bedeutung |
 |---|---|

@@ -1,4 +1,4 @@
-# Train/Test-Split — Mushroom Dataset
+# Train/Test-Split -- Mushroom Dataset
 
 ## 1. Zweck
 
@@ -6,8 +6,8 @@ Gemäß Kapitel 5.5 der Vorlesung (Trainings- und Testdatensatz) muss für eine 
 
 > *"Aus der Genauigkeit dieser Prognosen folgt, wie gut das Modell f die Realität abbildet: je genauer die Prognosen, desto besser das Modell. Um die Genauigkeit von Prognosen zu errechnen, darf man nicht denselben Datensatz verwenden, mit dem das Modell schon berechnet wurde."*
 
-- **Trainingsdatensatz** (70 %) — wird zum Berechnen der Modelle verwendet
-- **Testdatensatz** (30 %) — wird ausschließlich für die finale Evaluation der Modelle verwendet
+- **Trainingsdatensatz** (70 %) -- wird zum Berechnen der Modelle verwendet
+- **Testdatensatz** (30 %) -- wird ausschließlich für die finale Evaluation der Modelle verwendet
 
 ## 2. Methodik
 

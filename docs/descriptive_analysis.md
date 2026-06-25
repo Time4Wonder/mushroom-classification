@@ -1,10 +1,10 @@
-# Deskriptive Analyse — Mushroom Dataset
+# Deskriptive Analyse -- Mushroom Dataset
 
-## 1. Cramér's V — Assoziation der Merkmale mit der Zielvariable
+## 1. Cramers's V -- Assoziation der Merkmale mit der Zielvariable
 
-Cramér's V misst die Stärke des Zusammenhangs zwischen jedem Merkmal und der Zielvariable `class` (essbar/giftig). Wertebereich: 0 (kein Zusammenhang) bis 1 (perfekte Trennung).
+Cramers's V misst die Stärke des Zusammenhangs zwischen jedem Merkmal und der Zielvariable `class` (essbar/giftig). Wertebereich: 0 (kein Zusammenhang) bis 1 (perfekte Trennung).
 
-| Rang | Merkmal | Cramér's V | Interpretation |
+| Rang | Merkmal | Cramers's V | Interpretation |
 |---|---|---|---|
 | 1 | odor (Geruch) | **0.971** | nahezu perfekte Trennung |
 | 2 | spore_print_color (Sporenpulverfarbe) | **0.753** | sehr starker Zusammenhang |
@@ -24,7 +24,7 @@ Cramér's V misst die Stärke des Zusammenhangs zwischen jedem Merkmal und der Z
 | 16 | veil_color (Velumfarbe) | 0.153 | sehr schwacher Zusammenhang |
 | 17 | stalk_shape (Stielform) | 0.102 | sehr schwacher Zusammenhang |
 
-![Cramér's V aller Merkmale](../docs/plots/cramers_v.png)
+![Cramers's V aller Merkmale](../docs/plots/cramers_v.png)
 
 ---
 
@@ -43,50 +43,50 @@ Die Klasse ist nahezu balanciert:
 
 ![Konditionale Barplots der Top-8 Merkmale](../docs/plots/top8_conditional_barplots.png)
 
-### 3.1 Odor (Geruch) — Cramér's V = 0.971
+### 3.1 Odor (Geruch) -- Cramers's V = 0.971
 
 Der Geruch ist mit Abstand das trennschärfste Merkmal. Mehrere Geruchsausprägungen sind **perfekte Indikatoren** für Giftigkeit:
 
-- **Eindeutig giftig**: creosote, fishy, foul, musty, pungent, spicy — alle zu 100 % giftig
-- **Eindeutig essbar**: almond, anise — alle zu 100 % essbar
+- **Eindeutig giftig**: creosote, fishy, foul, musty, pungent, spicy -- alle zu 100 % giftig
+- **Eindeutig essbar**: almond, anise -- alle zu 100 % essbar
 - **Geruchslos** (none): zu 96,6 % essbar, zu 3,4 % giftig
 
 Für die Praxis bedeutet das: Ein Pilz mit starkem, unangenehmem Geruch ist mit hoher Sicherheit giftig.
 
-### 3.2 Spore Print Color (Sporenpulverfarbe) — Cramér's V = 0.753
+### 3.2 Spore Print Color (Sporenpulverfarbe) -- Cramers's V = 0.753
 
-- **Eindeutig essbar**: buff, orange, purple, yellow — zu 100 % essbar
+- **Eindeutig essbar**: buff, orange, purple, yellow -- zu 100 % essbar
 - **Eindeutig giftig**: green (100 %), chocolate (97,1 %)
 - **Gemischt**: black (88 % essbar), brown (88,6 % essbar), white (75,9 % giftig)
 
-### 3.3 Gill Color (Lamellenfarbe) — Cramér's V = 0.681
+### 3.3 Gill Color (Lamellenfarbe) -- Cramers's V = 0.681
 
-- **Eindeutig essbar**: orange, red — zu 100 % essbar
-- **Eindeutig giftig**: buff, green — zu 100 % giftig
+- **Eindeutig essbar**: orange, red -- zu 100 % essbar
+- **Eindeutig giftig**: buff, green -- zu 100 % giftig
 - **Gemischt**: chocolate (72,1 % giftig), gray (67 % giftig), purple (90,2 % essbar), white (79,5 % essbar)
 
-### 3.4 Stalk Surface Above Ring (Stieloberfläche oberhalb des Rings) — Cramér's V = 0.588
+### 3.4 Stalk Surface Above Ring (Stieloberfläche oberhalb des Rings) -- Cramers's V = 0.588
 
-- **silky** (seidig): zu 93,9 % giftig — starke Tendenz
-- **fibrous** (faserig), **scaly** (schuppig), **smooth** (glatt): überwiegend essbar (67–74 %)
+- **silky** (seidig): zu 93,9 % giftig -- starke Tendenz
+- **fibrous** (faserig), **scaly** (schuppig), **smooth** (glatt): überwiegend essbar (67--74 %)
 
-### 3.5 Stalk Surface Below Ring (Stieloberfläche unterhalb des Rings) — Cramér's V = 0.575
+### 3.5 Stalk Surface Below Ring (Stieloberfläche unterhalb des Rings) -- Cramers's V = 0.575
 
-- **silky** (seidig): zu 93,8 % giftig — gleiches Muster wie oberhalb des Rings
-- **fibrous**, **scaly**, **smooth**: überwiegend essbar (69–76 %)
+- **silky** (seidig): zu 93,8 % giftig -- gleiches Muster wie oberhalb des Rings
+- **fibrous**, **scaly**, **smooth**: überwiegend essbar (69--76 %)
 
-### 3.6 Gill Size (Lamellengröße) — Cramér's V = 0.540
+### 3.6 Gill Size (Lamellengröße) -- Cramers's V = 0.540
 
 - **broad** (breit): zu 69,9 % essbar
-- **narrow** (schmal): zu 88,5 % giftig — schmale Lamellen sind ein starker Giftindikator
+- **narrow** (schmal): zu 88,5 % giftig -- schmale Lamellen sind ein starker Giftindikator
 
-### 3.7 Stalk Color Above Ring (Stielfarbe oberhalb des Rings) — Cramér's V = 0.525
+### 3.7 Stalk Color Above Ring (Stielfarbe oberhalb des Rings) -- Cramers's V = 0.525
 
-- **brown, buff, cinnamon, yellow**: zu 96,4–100 % giftig
+- **brown, buff, cinnamon, yellow**: zu 96,4--100 % giftig
 - **gray, orange, red**: zu 100 % essbar
 - **white**: gemischt (61,6 % essbar)
 
-### 3.8 Stalk Color Below Ring (Stielfarbe unterhalb des Rings) — Cramér's V = 0.515
+### 3.8 Stalk Color Below Ring (Stielfarbe unterhalb des Rings) -- Cramers's V = 0.515
 
 - **buff, cinnamon, yellow**: zu 100 % giftig
 - **brown**: 87,5 % giftig
@@ -101,7 +101,7 @@ Für die Praxis bedeutet das: Ein Pilz mit starkem, unangenehmem Geruch ist mit 
 
 `odor` erreicht mit 0.971 nahezu eine perfekte Trennung. Die Merkmale `spore_print_color` (0.753) und `gill_color` (0.681) sind ebenfalls starke Prädiktoren, aber deutlich schwächer als der Geruch.
 
-> **Hinweis zu den zwei Varianten**: Für das realistischere Pilzsammler-Szenario (Reduced-Variante) werden `odor` und `spore_print_color` entfernt. `gill_color` bleibt erhalten, da die Lamellenfarbe ein Standard-Bestimmungsmerkmal ist. Die Cramér's-V-Tabelle bezieht sich auf die Full-Variante (21 Features).
+> **Hinweis zu den zwei Varianten**: Für das realistischere Pilzsammler-Szenario (Reduced-Variante) werden `odor` und `spore_print_color` entfernt. `gill_color` bleibt erhalten, da die Lamellenfarbe ein Standard-Bestimmungsmerkmal ist. Die Cramers's-V-Tabelle bezieht sich auf die Full-Variante (21 Features).
 
 ### 4.2 Oberfläche vs. Farbe des Stiels
 
@@ -125,13 +125,13 @@ Die Stieloberfläche (ober- und unterhalb des Rings) ist ähnlich relevant (~0.5
 
 Der Datensatz enthält mehrere Merkmale mit **perfekt trennenden Ausprägungen**:
 
-- `odor`: 7 von 9 Ausprägungen sind 100%-Indikatoren (Cramér's V = 0.971)
-- `spore_print_color`: 4 von 9 Ausprägungen sind 100%-Indikatoren (Cramér's V = 0.753)
-- `gill_color`: 4 von 12 Ausprägungen sind 100%-Indikatoren (Cramér's V = 0.681)
-- `stalk_color_above_ring`: 3 von 9 Ausprägungen sind 100%-Indikatoren (Cramér's V = 0.525)
-- `stalk_color_below_ring`: 3 von 9 Ausprägungen sind 100%-Indikatoren (Cramér's V = 0.515)
+- `odor`: 7 von 9 Ausprägungen sind 100%-Indikatoren (Cramers's V = 0.971)
+- `spore_print_color`: 4 von 9 Ausprägungen sind 100%-Indikatoren (Cramers's V = 0.753)
+- `gill_color`: 4 von 12 Ausprägungen sind 100%-Indikatoren (Cramers's V = 0.681)
+- `stalk_color_above_ring`: 3 von 9 Ausprägungen sind 100%-Indikatoren (Cramers's V = 0.525)
+- `stalk_color_below_ring`: 3 von 9 Ausprägungen sind 100%-Indikatoren (Cramers's V = 0.515)
 
-Das bedeutet: Selbst in der Reduced-Variante (ohne `odor` + `spore_print_color`) existieren noch Merkmale mit perfekt trennenden Leveln (`gill_color`, `stalk_color_above_ring`, `stalk_color_below_ring`). Die logistische Regression (unregularisiertes `glm`) kann unter diesen Bedingungen **keinen endlichen Maximum-Likelihood-Schätzer** finden — die Koeffizienten divergieren gegen ±∞. Dieses Phänomen wird in Kapitel 4.1 der Vorlesung als "Complete Separation" thematisiert und ist der Grund, warum `glm` auf diesem Datensatz nicht als Baseline-Modell eingesetzt werden kann.
+Das bedeutet: Selbst in der Reduced-Variante (ohne `odor` + `spore_print_color`) existieren noch Merkmale mit perfekt trennenden Leveln (`gill_color`, `stalk_color_above_ring`, `stalk_color_below_ring`). Die logistische Regression (unregularisiertes `glm`) kann unter diesen Bedingungen **keinen endlichen Maximum-Likelihood-Schätzer** finden -- die Koeffizienten divergieren gegen +-/unendl. Dieses Phänomen wird in Kapitel 4.1 der Vorlesung als "Complete Separation" thematisiert und ist der Grund, warum `glm` auf diesem Datensatz nicht als Baseline-Modell eingesetzt werden kann.
 
 Tree-basierte Verfahren (Entscheidungsbäume, Random Forest) haben dieses Problem nicht, da sie nicht alle Parameter simultan schätzen, sondern gierig partitionieren.
 
@@ -143,23 +143,23 @@ Die folgenden Verfahren werden in der Praxis häufig eingesetzt, um kategoriale 
 
 ### 5.1 Multiple Correspondence Analysis (MCA)
 
-Die MCA ist das Pendant zur PCA für nominale Daten. Sie projiziert die Ausprägungen aller Merkmale in einen niedrigdimensionalen Raum und visualisiert, welche Kategorien häufig gemeinsam auftreten. Für den Mushroom-Datensatz ließe sich damit beispielsweise zeigen, dass die Ausprägungen `odor=almond`, `gill_size=broad` und `habitat=woods` im selben Bereich des Koordinatenraums cluster — also typisch für essbare Pilze sind.
+Die MCA ist das Pendant zur PCA für nominale Daten. Sie projiziert die Ausprägungen aller Merkmale in einen niedrigdimensionalen Raum und visualisiert, welche Kategorien häufig gemeinsam auftreten. Für den Mushroom-Datensatz ließe sich damit beispielsweise zeigen, dass die Ausprägungen `odor=almond`, `gill_size=broad` und `habitat=woods` im selben Bereich des Koordinatenraums cluster -- also typisch für essbare Pilze sind.
 
 ### 5.2 Mutual Information
 
-Während Cramér's V auf der Chi-Quadrat-Statistik basiert, misst die Transinformation (Mutual Information) den informations-theoretischen Zusammenhang zwischen Merkmal und Zielvariable. Sie erfasst auch nicht-lineare Abhängigkeiten und ist robuster bei unbalancierten Randverteilungen. Für Merkmale wie `odor` wäre der Wert nahe 1 Bit (perfekte Vorhersage), für `stalk_shape` nahe 0 Bit.
+Während Cramers's V auf der Chi-Quadrat-Statistik basiert, misst die Transinformation (Mutual Information) den informations-theoretischen Zusammenhang zwischen Merkmal und Zielvariable. Sie erfasst auch nicht-lineare Abhängigkeiten und ist robuster bei unbalancierten Randverteilungen. Für Merkmale wie `odor` wäre der Wert nahe 1 Bit (perfekte Vorhersage), für `stalk_shape` nahe 0 Bit.
 
 ### 5.3 Assoziationsregeln (Apriori-Algorithmus)
 
-Mit dem Apriori-Algorithmus ließen sich Regeln der Form `{odor=none, gill_size=broad} → {class=edible}` extrahieren. Das wäre besonders praxisrelevant, da es konkrete, kombinierte Merkmalsmuster identifiziert, die eine sichere Klassifikation erlauben. So könnte man etwa prüfen, ob bestimmte Ausprägungskombinationen eine 100 % treffsichere Unterscheidung erlauben — ohne Modell.
+Mit dem Apriori-Algorithmus ließen sich Regeln der Form `{odor=none, gill_size=broad} -> {class=edible}` extrahieren. Das wäre besonders praxisrelevant, da es konkrete, kombinierte Merkmalsmuster identifiziert, die eine sichere Klassifikation erlauben. So könnte man etwa prüfen, ob bestimmte Ausprägungskombinationen eine 100 % treffsichere Unterscheidung erlauben -- ohne Modell.
 
 ### 5.4 Adjusted Chi-Quadrat-Residuen
 
-Die adjustierten Residuen einer Kontingenztabelle zeigen je Feature-Ausprägung, ob die beobachtete Häufigkeit signifikant von der unter Unabhängigkeit erwarteten abweicht. Positive Residuen bedeuten eine überdurchschnittliche Assoziation mit `edible`, negative mit `poisonous`. Dies erlaubt eine feinere Analyse als der globale Cramér's V — insbesondere für Merkmale mit vielen Ausprägungen wie `gill_color`.
+Die adjustierten Residuen einer Kontingenztabelle zeigen je Feature-Ausprägung, ob die beobachtete Häufigkeit signifikant von der unter Unabhängigkeit erwarteten abweicht. Positive Residuen bedeuten eine überdurchschnittliche Assoziation mit `edible`, negative mit `poisonous`. Dies erlaubt eine feinere Analyse als der globale Cramers's V -- insbesondere für Merkmale mit vielen Ausprägungen wie `gill_color`.
 
 ### 5.5 Feature-Interaktionen
 
-Einzelne schwache Merkmale können in Kombination starke Prädiktoren sein. Beispielsweise haben `veil_color` und `stalk_shape` einzeln kaum Vorhersagekraft (Cramér's V < 0,16), aber ihre gemeinsame Betrachtung könnte durchaus Muster offenbaren. Eine Interaktionsanalyse (z. B. mit log-linearen Modellen oder Entscheidungsbäumen) kann solche verborgene Zusammenhänge aufdecken.
+Einzelne schwache Merkmale können in Kombination starke Prädiktoren sein. Beispielsweise haben `veil_color` und `stalk_shape` einzeln kaum Vorhersagekraft (Cramers's V < 0,16), aber ihre gemeinsame Betrachtung könnte durchaus Muster offenbaren. Eine Interaktionsanalyse (z. B. mit log-linearen Modellen oder Entscheidungsbäumen) kann solche verborgene Zusammenhänge aufdecken.
 
 ### 5.6 Mosaic-Plots
 

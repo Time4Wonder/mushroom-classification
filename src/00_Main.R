@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-# 00_Main.R — Orchestriert alle Analyseschritte
+# 00_Main.R -- Orchestriert alle Analyseschritte
 # Führt jedes Sub-Script aus und gibt die Kernaussagen formatiert aus.
 # Main-Ausgaben sind mit ">>> MAIN:" gekennzeichnet.
 
@@ -11,7 +11,7 @@ set.seed(467)
 
 cat("\n")
 cat(rep("=", 62), sep = "", fill = TRUE)
-cat(">>> MAIN: ML-Projekt Mushroom Classification – Gesamtanalyse\n")
+cat(">>> MAIN: ML-Projekt Mushroom Classification -- Gesamtanalyse\n")
 cat(rep("=", 62), sep = "", fill = TRUE)
 cat("\n")
 
@@ -19,7 +19,7 @@ cat("\n")
 # SCHRITT 1: DATENVORBEREITUNG
 # ======================================================================
 cat(rep("=", 62), sep = "", fill = TRUE)
-cat(">>> MAIN: SCHRITT 1 – DATENVORBEREITUNG (01_preprocessing.R)\n")
+cat(">>> MAIN: SCHRITT 1 -- DATENVORBEREITUNG (01_preprocessing.R)\n")
 cat(rep("=", 62), sep = "", fill = TRUE)
 cat("\n")
 
@@ -36,21 +36,21 @@ cat(sprintf("  Full-Variante:    %d Zeilen, %d Merkmale (alle außer veil_type)\
             nrow(full), ncol(full) - 1))
 cat(sprintf("  Reduced-Variante: %d Zeilen, %d Merkmale (ohne odor + spore_print_color)\n",
             nrow(reduced), ncol(reduced) - 1))
-cat(sprintf("  veil_type: konstant → entfernt (Ch. 3.1)\n"))
-cat(sprintf("  stalk_root: 30x NA → modalimputiert mit 'bulbous'\n"))
+cat(sprintf("  veil_type: konstant -> entfernt (Ch. 3.1)\n"))
+cat(sprintf("  stalk_root: 30x NA -> modalimputiert mit 'bulbous'\n"))
 cat("\n")
 
 # ======================================================================
 # SCHRITT 2: DESKRIPTIVE ANALYSE
 # ======================================================================
 cat(rep("=", 62), sep = "", fill = TRUE)
-cat(">>> MAIN: SCHRITT 2 – DESKRIPTIVE ANALYSE (02_descriptive_analysis.R)\n")
+cat(">>> MAIN: SCHRITT 2 -- DESKRIPTIVE ANALYSE (02_descriptive_analysis.R)\n")
 cat(rep("=", 62), sep = "", fill = TRUE)
 cat("\n")
 
 source("src/02_descriptive_analysis.R")
 
-# Cramér's V für die Reduced-Variante berechnen (damit odor/spore nicht dominieren)
+# Cramers's V für die Reduced-Variante berechnen (damit odor/spore nicht dominieren)
 data <- readRDS("data/processed/mushroom_clean_reduced.rds")
 target <- data$class
 features <- setdiff(names(data), "class")
@@ -68,7 +68,7 @@ cv_sorted <- sort(cv, decreasing = TRUE)
 
 cat("\n")
 cat(rep("-", 62), sep = "", fill = TRUE)
-cat(">>> MAIN: Cramér's V – Zusammenhangsstärke mit class (Reduced-Variante)\n")
+cat(">>> MAIN: Cramers's V -- Zusammenhangsstärke mit class (Reduced-Variante)\n")
 cat(rep("-", 62), sep = "", fill = TRUE)
 cat(sprintf("  Rang 1: %-28s %.4f\n", names(cv_sorted)[1], cv_sorted[1]))
 cat(sprintf("  Rang 2: %-28s %.4f\n", names(cv_sorted)[2], cv_sorted[2]))
@@ -79,7 +79,7 @@ cat(sprintf("  Rang 6: %-28s %.4f\n", names(cv_sorted)[6], cv_sorted[6]))
 cat("\n")
 
 # Perfekte Indikatoren (100%-Levels)
-cat(">>> MAIN: Perfekte Indikatoren – 100%-Levels erkennen\n")
+cat(">>> MAIN: Perfekte Indikatoren -- 100%-Levels erkennen\n")
 for (feat in names(cv_sorted[1:6])) {
   tab <- table(data[[feat]], data$class)
   p <- prop.table(tab, 1)
@@ -91,7 +91,7 @@ for (feat in names(cv_sorted[1:6])) {
   if (length(poisonous_only) > 0)
     parts <- c(parts, sprintf("100%% giftig: %s", paste(poisonous_only, collapse = ", ")))
   if (length(parts) > 0)
-    cat(sprintf("  %-28s → %s\n", feat, paste(parts, collapse = " | ")))
+    cat(sprintf("  %-28s -> %s\n", feat, paste(parts, collapse = " | ")))
 }
 cat("\n")
 
@@ -99,7 +99,7 @@ cat("\n")
 # SCHRITT 3: TRAIN/TEST SPLIT
 # ======================================================================
 cat(rep("=", 62), sep = "", fill = TRUE)
-cat(">>> MAIN: SCHRITT 3 – TRAIN/TEST SPLIT (03_train_test_split.R)\n")
+cat(">>> MAIN: SCHRITT 3 -- TRAIN/TEST SPLIT (03_train_test_split.R)\n")
 cat(rep("=", 62), sep = "", fill = TRUE)
 cat("\n")
 
@@ -131,7 +131,7 @@ cat("\n")
 # SCHRITT 4: LOGISTISCHE REGRESSION
 # ======================================================================
 cat(rep("=", 62), sep = "", fill = TRUE)
-cat(">>> MAIN: SCHRITT 4 – METHODE 1: LOGISTISCHE REGRESSION (04_model_logistic.R)\n")
+cat(">>> MAIN: SCHRITT 4 -- METHODE 1: LOGISTISCHE REGRESSION (04_model_logistic.R)\n")
 cat(rep("=", 62), sep = "", fill = TRUE)
 cat("\n")
 
@@ -142,7 +142,7 @@ s <- summary(log_model)
 
 cat("\n")
 cat(rep("-", 62), sep = "", fill = TRUE)
-cat(">>> MAIN: Perfect Separation – Diagnose\n")
+cat(">>> MAIN: Perfect Separation -- Diagnose\n")
 cat(rep("-", 62), sep = "", fill = TRUE)
 
 # Warnungen (aus dem letzten glm-Aufruf)
@@ -169,7 +169,7 @@ cat("\n")
 # Deviance
 cat(sprintf("  Residual Deviance: %.2e (Null Deviance: %.2f)\n",
             s$deviance, s$null.deviance))
-cat(sprintf("  → Residual Deviance ≈ 0: degenerierter Fit\n\n"))
+cat(sprintf("  -> Residual Deviance ~= 0: degenerierter Fit\n\n"))
 
 # Confusion Matrix
 prob <- predict(log_model, newdata = test, type = "response")
@@ -183,14 +183,14 @@ acc <- (TP + TN) / sum(cm)
 
 cat(sprintf("  Confusion Matrix: FP = %d (TOD), FN = %d, Accuracy = %.2f%%\n",
             FP, FN, acc * 100))
-cat("  → LogReg ist ungeeignet für diesen Datensatz (Ch. 4.1)\n")
+cat("  -> LogReg ist ungeeignet für diesen Datensatz (Ch. 4.1)\n")
 cat("\n")
 
 # ======================================================================
 # SCHRITT 5: DECISION TREE
 # ======================================================================
 cat(rep("=", 62), sep = "", fill = TRUE)
-cat(">>> MAIN: SCHRITT 5 – METHODE 2: DECISION TREE (05_model_tree.R)\n")
+cat(">>> MAIN: SCHRITT 5 -- METHODE 2: DECISION TREE (05_model_tree.R)\n")
 cat(rep("=", 62), sep = "", fill = TRUE)
 cat("\n")
 
@@ -201,7 +201,7 @@ tree_cost  <- readRDS("data/processed/tree_model_cost.rds")
 
 cat("\n")
 cat(rep("-", 62), sep = "", fill = TRUE)
-cat(">>> MAIN: Entscheidungsbaum – Standard vs. Cost-sensitive\n")
+cat(">>> MAIN: Entscheidungsbaum -- Standard vs. Cost-sensitive\n")
 cat(rep("-", 62), sep = "", fill = TRUE)
 
 # Standard Tree
@@ -235,7 +235,7 @@ cat(sprintf("  %-25s %17.2f%% %19.2f%%\n", "Specificity", spec_std * 100, spec_c
 cat("\n")
 cat(sprintf("  Splits Standard: %d  |  Splits Cost: %d\n",
             nrow(tree_std$frame) - 1, nrow(tree_cost$frame) - 1))
-cat(sprintf("  Cost-sensitive: 0 tödliche Fehler → Praxis-Empfehlung\n"))
+cat(sprintf("  Cost-sensitive: 0 tödliche Fehler -> Praxis-Empfehlung\n"))
 
 # Wurzel-Split
 root_var_cost <- as.character(tree_cost$frame$var[1])
@@ -246,7 +246,7 @@ cat("\n")
 # SCHRITT 6: RANDOM FOREST
 # ======================================================================
 cat(rep("=", 62), sep = "", fill = TRUE)
-cat(">>> MAIN: SCHRITT 6 – METHODE 3: RANDOM FOREST (06_model_rf.R)\n")
+cat(">>> MAIN: SCHRITT 6 -- METHODE 3: RANDOM FOREST (06_model_rf.R)\n")
 cat(rep("=", 62), sep = "", fill = TRUE)
 cat("\n")
 
@@ -256,7 +256,7 @@ rf <- readRDS("data/processed/rf_model_reduced.rds")
 
 cat("\n")
 cat(rep("-", 62), sep = "", fill = TRUE)
-cat(">>> MAIN: Random Forest – Ergebnisse (Reduced-Variante)\n")
+cat(">>> MAIN: Random Forest -- Ergebnisse (Reduced-Variante)\n")
 cat(rep("-", 62), sep = "", fill = TRUE)
 
 pred_rf <- predict(rf, newdata = test)
@@ -294,7 +294,7 @@ cat("\n")
 # SCHRITT 7: MODELLVERGLEICH + ZUSAMMENFASSUNG
 # ======================================================================
 cat(rep("=", 62), sep = "", fill = TRUE)
-cat(">>> MAIN: SCHRITT 7 – MODELLVERGLEICH\n")
+cat(">>> MAIN: SCHRITT 7 -- MODELLVERGLEICH\n")
 cat(rep("=", 62), sep = "", fill = TRUE)
 cat("\n")
 
@@ -307,7 +307,7 @@ cat("\n")
 header <- sprintf("  %-28s %10s %10s %12s %12s",
                   "Modell", "FP (TOD)", "FN", "Accuracy", "Specificity")
 cat(header, "\n")
-cat(sprintf("  %s\n", paste(rep("—", 75), collapse = "")))
+cat(sprintf("  %s\n", paste(rep("--", 75), collapse = "")))
 
 log_spec <- TN / (TN + FP)
 cat(sprintf("  %-28s %10d %10d %11.2f%% %11.2f%%\n",
@@ -325,11 +325,11 @@ cat(">>> ZUSAMMENFASSUNG\n")
 cat(rep("=", 62), sep = "", fill = TRUE)
 cat("\n")
 cat("  Modell                            Status\n")
-cat("  ", paste(rep("—", 55), collapse = ""), "\n", sep = "")
-cat("  Logistische Regression            ❌ Perfect Separation (Ch. 4.1)\n")
-cat("  Decision Tree (Standard)           ✅ 2 FP, 4 FN, Acc = 99,75%\n")
-cat("  Decision Tree (Cost-sensitive)     ✅ 0 FP, 20 FN, Acc = 99,18% – PRAXIS-EMPFEHLUNG\n")
-cat("  Random Forest                      ✅ 0 FP, 0 FN, Acc = 100% – Beste Metriken\n")
+cat("  ", paste(rep("--", 55), collapse = ""), "\n", sep = "")
+cat("  Logistische Regression            [NEIN] Perfect Separation (Ch. 4.1)\n")
+cat("  Decision Tree (Standard)           [OK] 2 FP, 4 FN, Acc = 99,75%\n")
+cat("  Decision Tree (Cost-sensitive)     [OK] 0 FP, 20 FN, Acc = 99,18% -- PRAXIS-EMPFEHLUNG\n")
+cat("  Random Forest                      [OK] 0 FP, 0 FN, Acc = 100% -- Beste Metriken\n")
 cat("\n")
 cat("  >>> Empfehlung: Cost-sensitive Decision Tree für die Praxis,\n")
 cat("      weil 0 tödliche Fehler + voll interpretierbar.\n")

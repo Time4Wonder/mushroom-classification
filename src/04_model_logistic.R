@@ -1,5 +1,5 @@
 # 04_model_logistic.R
-# Logistic Regression (Ch. 4.1) — baseline binary classifier
+# Logistic Regression (Ch. 4.1) -- baseline binary classifier
 #
 # Note: glm fails on both variants due to quasi-complete separation.
 # The mushroom dataset contains features whose levels perfectly (or near-
@@ -13,7 +13,7 @@ train_full <- readRDS("data/processed/train_full.rds")
 test_full  <- readRDS("data/processed/test_full.rds")
 
 log_full <- glm(class ~ ., data = train_full, family = binomial)
-cat("glm: algorithm did not converge — odor causes perfect separation\n\n")
+cat("glm: algorithm did not converge -- odor causes perfect separation\n\n")
 
 # --- 2. Reduced variant: quasi-complete separation persists ---
 cat("--- Reduced variant (19 features, without odor + spore_print_color) ---\n")
@@ -22,7 +22,7 @@ test  <- readRDS("data/processed/test_reduced.rds")
 
 log_model <- glm(class ~ ., data = train, family = binomial)
 
-cat("glm: algorithm still did not converge — quasi-complete separation\n")
+cat("glm: algorithm still did not converge -- quasi-complete separation\n")
 cat("   (e.g. gill_color, stalk_color still have perfectly predictive levels)\n")
 cat("   Residual deviance near 0 = degenerate fit\n\n")
 
@@ -58,7 +58,7 @@ cat("\n--- Discussion ---\n")
 cat("Logistic regression (unregularized glm) is unsuitable for this dataset.\n")
 cat("Even on the reduced variant (19 features), quasi-complete separation\n")
 cat("occurs because multiple feature levels perfectly predict the class.\n")
-cat("The MLE does not exist — coefficients diverge, predictions are\n")
+cat("The MLE does not exist -- coefficients diverge, predictions are\n")
 cat("unreliable. This is a known limitation discussed in Ch. 4.1.\n\n")
 cat("Tree-based methods (rpart, randomForest) handle this naturally:\n")
 cat("- They split on the most informative feature at each node\n")

@@ -1,5 +1,5 @@
 # plots_comparison.R
-# Comparison barplot: 4 models × key metrics for presentation slides
+# Comparison barplot: 4 models x key metrics for presentation slides
 
 library(randomForest)
 library(rpart)
@@ -62,7 +62,7 @@ par(mfrow = c(1, 2))
 # Left: FP + FN (absolute counts)
 barplot(rbind(metrics_mat["FP", ], metrics_mat["FN", ]),
         beside = TRUE, col = c("red", "orange"),
-        main = "Fehleranzahl (FP = giftig → essbar = TOD)",
+        main = "Fehleranzahl (FP = giftig -> essbar = TOD)",
         ylab = "Anzahl", xlab = "Modell",
         names.arg = colnames(metrics_mat),
         legend.text = c("FP (TOD)", "FN (harmlos)"),

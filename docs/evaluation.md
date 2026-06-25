@@ -1,4 +1,4 @@
-# Evaluierung der Modelle – Schritt für Schritt
+# Evaluierung der Modelle -- Schritt für Schritt
 
 Dieses Dokument erklärt, wie man die Ergebnisse der drei Modelle in R
 überprüft und interpretiert. Es richtet sich an Leute, die R ausführen
@@ -15,23 +15,23 @@ können, aber keine Statistik-Profis sind.
 | Decision Tree (Cost-sensitive) | **0** | 20 | 99,18 % | **100 %** |
 | Random Forest | **0** | **0** | **100 %** | **100 %** |
 
-- **FP (TOD)** = giftiger Pilz als essbar eingestuft → **tödlich**
-- **FN (harmlos)** = essbarer Pilz als giftig eingestuft → Pilz wird nicht gegessen
+- **FP (TOD)** = giftiger Pilz als essbar eingestuft -> **tödlich**
+- **FN (harmlos)** = essbarer Pilz als giftig eingestuft -> Pilz wird nicht gegessen
 - **Accuracy** = Anteil richtiger Vorhersagen insgesamt
 - **Specificity** = Anteil erkannter Giftpilze (Richtig-negativ-Rate)
 
 ---
 
-## 1. Logistische Regression – warum sie scheitert
+## 1. Logistische Regression -- warum sie scheitert
 
 ### Eckpunkte auf einen Blick
 
 | Was? | Ergebnis |
 |------|----------|
-| **Perfect Separation** | Der ML-Schätzer existiert nicht – LogReg kann nicht rechnen |
-| **Koeffizienten** | Explodieren: `cinnamon = 252,5`, `rooted = −198,0` |
-| **Standardfehler** | 100.000+ (700× größer als die Koeffizienten) |
-| **Residual Deviance** | `6,51e-08` – degeneriert (zu perfekt, um wahr zu sein) |
+| **Perfect Separation** | Der ML-Schätzer existiert nicht -- LogReg kann nicht rechnen |
+| **Koeffizienten** | Explodieren: `cinnamon = 252,5`, `rooted = -198,0` |
+| **Standardfehler** | 100.000+ (700x größer als die Koeffizienten) |
+| **Residual Deviance** | `6,51e-08` -- degeneriert (zu perfekt, um wahr zu sein) |
 | **Vorhersagen** | 1172 FP + 1262 FN = **schlechter als Raten** |
 | **Fazit** | LogReg ist für nominale Daten mit deterministischen Levels **strukturell ungeeignet** |
 
@@ -39,7 +39,7 @@ können, aber keine Statistik-Profis sind.
 
 Die logistische Regression versagt an diesem Datensatz, weil Merkmale
 vorkommen, die die Pilzart **perfekt vorhersagen** (z.B. "Stielfarbe
-zimtbraun → immer giftig"). Die Rechnung läuft dann ins Unendliche
+zimtbraun -> immer giftig"). Die Rechnung läuft dann ins Unendliche
 und liefert keine brauchbaren Ergebnisse.
 
 ### R-Code: Modell anpassen und ausgeben lassen
@@ -60,7 +60,7 @@ print(s)
 ### Schritt-für-Schritt-Checkliste
 
 Wenn du `summary(log_model)` ausführst, siehst du diesen Output.
-Hier worauf du achten musst – und woran du siehst, dass etwas schiefläuft:
+Hier worauf du achten musst -- und woran du siehst, dass etwas schiefläuft:
 
 ---
 
@@ -110,8 +110,8 @@ stalk_rootrooted               -198,0    1,24e+05
 gill_colorbuff                  144,8    1,30e+05
 ```
 
-**Bedeutung:** Normale Koeffizienten liegen zwischen −3 und +3.
-Wenn Werte über 10 oder unter −10 auftauchen, läuft die Schätzung
+**Bedeutung:** Normale Koeffizienten liegen zwischen -3 und +3.
+Wenn Werte über 10 oder unter -10 auftauchen, läuft die Schätzung
 ins Unendliche.
 
 **Merke:** Ein Koeffizient von 252 bedeutet nicht "dieses Merkmal
@@ -124,11 +124,11 @@ ist 252-mal wichtiger". Es bedeutet "die Rechnung ist explodiert".
 Normalerweise ist der Standardfehler kleiner als der Koeffizient.
 Hier ist er hunder- bis tausendmal größer:
 
-- 252,5 ± 175.071 → Der Fehler ist 700× größer als der Wert
-- −198,0 ± 123.702 → Der Fehler ist 600× größer als der Wert
+- 252,5 +-/ 175.071 -> Der Fehler ist 700x größer als der Wert
+- -198,0 +-/ 123.702 -> Der Fehler ist 600x größer als der Wert
 
 **Bedeutung:** Wir wissen praktisch nichts über diesen Koeffizienten.
-Die Statistik sagt: "Keine Ahnung." Deshalb sind alle p-Werte ≈ 1.
+Die Statistik sagt: "Keine Ahnung." Deshalb sind alle p-Werte ~= 1.
 
 ---
 
@@ -144,7 +144,7 @@ Residual deviance: 6.5087e-08  on 5614  degrees of freedom
 Die **Null Deviance** (7876) ist der Fehler, wenn man einfach nur rät.
 Die **Residual Deviance** (0,000000065) ist der Fehler nach dem Modell.
 
-**Bedeutung:** Das Modell passt perfekt – aber zu perfekt.
+**Bedeutung:** Das Modell passt perfekt -- aber zu perfekt.
 Der Wert ist fast 0, was bedeutet: Das Modell hat sich totgerechnet.
 Ein gesundes Modell hätte einen Residual Deviance irgendwo zwischen
 5000 und 7000.
@@ -189,24 +189,24 @@ Das ist schlechter als Raten (Raten wäre ~50 %).
 
 ---
 
-## 2. Decision Tree – der beste Kompromiss
+## 2. Decision Tree -- der beste Kompromiss
 
 ### Eckpunkte auf einen Blick
 
 | Was? | Ergebnis |
 |------|----------|
-| **cp-Tuning** | 10-fold CV + 1-SE-Regel → **38 Splits**, 11 von 19 Merkmalen genutzt |
-| **Cost-sensitive** | Loss Matrix bestraft FP 10× → **0 tödliche Fehler** |
+| **cp-Tuning** | 10-fold CV + 1-SE-Regel -> **38 Splits**, 11 von 19 Merkmalen genutzt |
+| **Cost-sensitive** | Loss Matrix bestraft FP 10x -> **0 tödliche Fehler** |
 | **Standard (1:1)** | 2 FP (TOD), 4 FN (harmlos), Acc = 99,75 % |
-| **Cost-sensitive (10×)** | **0 FP**, 20 FN, Acc = 99,18 %, Spec = **100 %** |
+| **Cost-sensitive (10x)** | **0 FP**, 20 FN, Acc = 99,18 %, Spec = **100 %** |
 | **Wurzel-Split** | `stalk_color_above_ring` (nicht `gill_color`!) |
-| **Interpretierbarkeit** | ✅ **Vollständig** – jeder Pfad ist lesbar |
+| **Interpretierbarkeit** | [OK] **Vollständig** -- jeder Pfad ist lesbar |
 | **Fazit** | **Beste Wahl für die Praxis**: 0 TOD, robust getuned, erklärbar |
 
 ### Das Prinzip in einem Satz
 
 Ein Entscheidungsbaum stellt Ja/Nein-Fragen der Reihe nach:
-"Ist die Lamellenfarbe orange? → Ja → essbar". Er entscheidet
+"Ist die Lamellenfarbe orange? -> Ja -> essbar". Er entscheidet
 nicht alles gleichzeitig, sondern Schritt für Schritt.
 
 ### R-Code
@@ -222,7 +222,7 @@ test  <- readRDS("data/processed/test_reduced.rds")
 tree_std <- rpart(class ~ ., data = train, method = "class",
                   control = rpart.control(cp = 0.001, xval = 10))
 
-# Cost-sensitive Tree (FP = tödlich → 10× schwerer bestraft)
+# Cost-sensitive Tree (FP = tödlich -> 10x schwerer bestraft)
 cost <- matrix(c(0, 1,    # true edible: 1 = Fehler harmlos
                  10, 0),  # true poisonous: 10 = Fehler tödlich
                nrow = 2, byrow = TRUE,
@@ -313,7 +313,7 @@ Echt giftig        10 (TOD)        0 (OK)
 
 **Bedeutung:** Wenn der Baum einen giftigen Pilz als essbar
 einstuft, zählt das 10 Fehler. Der Baum wird also alles tun,
-um diesen Fehler zu vermeiden – selbst wenn er dafür ein paar
+um diesen Fehler zu vermeiden -- selbst wenn er dafür ein paar
 essbare Pilze fälschlich als giftig einstuft.
 
 ---
@@ -335,7 +335,7 @@ Predicted   edible poisonous
   edible      1258         2
   poisonous      4      1173
 ```
-→ 2 tödliche Fehler (FP), 4 harmlose Fehler (FN)
+-> 2 tödliche Fehler (FP), 4 harmlose Fehler (FN)
 
 Cost-sensitive Tree:
 ```
@@ -344,48 +344,48 @@ Predicted   edible poisonous
   edible      1242         0
   poisonous     20      1175
 ```
-→ **0 tödliche Fehler** (FP), 20 harmlose Fehler (FN)
+-> **0 tödliche Fehler** (FP), 20 harmlose Fehler (FN)
 
 ---
 
 ### Zusammenfassung für Nicht-Profis
 
 > Stell dir einen Pilz-Experten vor, der einen Bestimmungsschlüssel
-> benutzt: "Ist die Lamellenfarbe orange? → Ja → essbar. Ist sie
-> buff? → Ja → ist der Stiel zimtbraun? → Ja → giftig." Der Baum
+> benutzt: "Ist die Lamellenfarbe orange? -> Ja -> essbar. Ist sie
+> buff? -> Ja -> ist der Stiel zimtbraun? -> Ja -> giftig." Der Baum
 > arbeitet wie so ein Schlüssel: Frage für Frage, ohne alle Merkmale
 > gleichzeitig betrachten zu müssen.
 >
 > Wenn wir tödliche Fehler vermeiden wollen, sagen wir dem Baum:
-> "Bestrafe einen Fehler bei Giftpilzen 10× härter als einen Fehler
+> "Bestrafe einen Fehler bei Giftpilzen 10x härter als einen Fehler
 > bei essbaren Pilzen." Dann macht der Baum lieber 20 harmlose Fehler
-> (essbar → giftig) als einen einzigen tödlichen (giftig → essbar).
+> (essbar -> giftig) als einen einzigen tödlichen (giftig -> essbar).
 >
 > **Ergebnis:** Der Cost-sensitive Tree hat 0 tödliche Fehler und
 > ist vollständig nachvollziehbar. Für die Praxis die beste Wahl.
 
 ---
 
-## 3. Random Forest – der Overachiever
+## 3. Random Forest -- der Overachiever
 
 ### Eckpunkte auf einen Blick
 
 | Was? | Ergebnis |
 |------|----------|
-| **mtry-Tuning** | 10-fold CV → bestes `mtry = 11` (von 19 Merkmalen) |
-| **Fehler** | **0 FP (TOD)**, **0 FN (harmlos)** – perfekte Klassifikation |
+| **mtry-Tuning** | 10-fold CV -> bestes `mtry = 11` (von 19 Merkmalen) |
+| **Fehler** | **0 FP (TOD)**, **0 FN (harmlos)** -- perfekte Klassifikation |
 | **Accuracy** | **100 %** |
 | **AUC** | **1,000** (perfekte Trennung) |
 | **OOB Error** | **0 %** |
 | **Variable Importance** | `gill_color` dominiert, gefolgt von `gill_size` und `population` |
-| **Interpretierbarkeit** | ❌ **Blackbox** – keine Nachvollziehbarkeit |
+| **Interpretierbarkeit** | [NEIN] **Blackbox** -- keine Nachvollziehbarkeit |
 | **Fazit** | **Maximale Performance**, aber nicht erklärbar. Für die Forschung ideal, für die Praxis überdimensioniert |
 
 ### Das Prinzip in einem Satz
 
 Ein Random Forest ist wie 500 Entscheidungsbäume, die gemeinsam
 abstimmen. Jeder Baum sieht etwas andere Daten und andere Merkmale
-→ zusammen sind sie stärker und stabiler.
+-> zusammen sind sie stärker und stabiler.
 
 ### R-Code
 
@@ -418,12 +418,12 @@ rf <- randomForest(class ~ ., data = train,
 mtry =  2: CV Accuracy = 0.9645
 mtry =  3: CV Accuracy = 0.9670
 ...
-mtry = 11: CV Accuracy = 0.9700  ← bester Wert
+mtry = 11: CV Accuracy = 0.9700  <- bester Wert
 mtry = 12: CV Accuracy = ...
 ```
 
 **Bedeutung:** `mtry` ist die Anzahl der Merkmale, die jeder Baum
-zufällig zur Auswahl bekommt. Standard ist √19 ≈ 4, aber hier
+zufällig zur Auswahl bekommt. Standard ist sqrt19 ~= 4, aber hier
 schneidet 11 am besten ab. Das liegt daran, dass viele Merkmale
 informativ sind und der Forest mehr Auswahl braucht.
 
@@ -441,7 +441,7 @@ plot(rf)
 
 **Bedeutung:** Der OOB Error ist der Fehler, den der Forest auf
 Daten macht, die er noch nicht gesehen hat (quasi eingebaute
-Kreuzvalidierung). Hier: **0 %** – der Forest macht keine Fehler.
+Kreuzvalidierung). Hier: **0 %** -- der Forest macht keine Fehler.
 
 ---
 
@@ -464,7 +464,7 @@ stalk_root                 31,409          152,371
 
 **Bedeutung:** Je höher der Wert, desto wichtiger das Merkmal.
 `gill_color` (Lamellenfarbe) ist das wichtigste Merkmal.
-Das deckt sich mit Cramér's V aus der deskriptiven Analyse.
+Das deckt sich mit Cramers's V aus der deskriptiven Analyse.
 
 ---
 
@@ -508,7 +508,7 @@ die Trennung ist perfekt.
 > "giftig" sagen, ist er giftig. Wenn alle 500 "essbar" sagen,
 > ist er essbar. Der Random Forest macht das mit 500 Bäumen.
 >
-> Das Ergebnis ist perfekt – aber niemand kann dir erklären,
+> Das Ergebnis ist perfekt -- aber niemand kann dir erklären,
 > warum genau der Pilz jetzt giftig ist. Es ist eine Blackbox.
 >
 > **Ergebnis:** 0 Fehler, 100 % Accuracy. Besser geht nicht.

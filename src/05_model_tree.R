@@ -1,5 +1,5 @@
 # 05_model_tree.R
-# Decision Tree (rpart) — Ch. 4.1
+# Decision Tree (rpart) -- Ch. 4.1
 # Trained on reduced variant (19 features, without odor + spore_print_color)
 # Includes cost-sensitive variant (FN 10x worse than FP)
 
@@ -123,7 +123,7 @@ dir.create("docs/plots", recursive = TRUE, showWarnings = FALSE)
 png("docs/plots/tree_plot.png", width = 2000, height = 1400, res = 150)
 rpart.plot(pruned_b, type = 2, extra = 104,
            box.palette = c("red", "green"),
-           main = "Decision Tree (Cost-sensitive, FN 10x) — Reduced Variant")
+           main = "Decision Tree (Cost-sensitive, FN 10x) -- Reduced Variant")
 dev.off()
 cat("\nSaved: docs/plots/tree_plot.png\n")
 

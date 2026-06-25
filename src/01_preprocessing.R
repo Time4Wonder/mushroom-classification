@@ -127,7 +127,7 @@ cat("veil_type levels:", paste(levels(data$veil_type), collapse = ", "), "\n")
 cat("veil_type distribution:\n")
 print(table(data$veil_type))
 
-# veil_type is constant (only "partial") — no predictive value (cf. Ch. 3.1 lecture)
+# veil_type is constant (only "partial") -- no predictive value (cf. Ch. 3.1 lecture)
 data$veil_type <- NULL
 cat("Removed constant feature: veil_type\n")
 

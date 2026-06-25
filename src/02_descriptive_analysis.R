@@ -6,7 +6,7 @@ data <- readRDS("data/processed/mushroom_clean_full.rds")
 
 dir.create("docs/plots", recursive = TRUE, showWarnings = FALSE)
 
-# --- 2. Cramér's V for all features vs class ---
+# --- 2. Cramers's V for all features vs class ---
 cramers_v <- function(x, y) {
   tab <- table(x, y)
   ct <- suppressWarnings(chisq.test(tab, simulate.p.value = TRUE, B = 2000))
@@ -19,14 +19,14 @@ features <- setdiff(names(data), "class")
 cv <- sapply(data[features], function(x) cramers_v(x, data$class))
 cv_sorted <- sort(cv, decreasing = TRUE)
 
-cat("Cramér's V (class vs. feature):\n")
+cat("Cramers's V (class vs. feature):\n")
 print(round(cv_sorted, 4))
 
-# --- 3. Overview plot: Cramér's V horizontal bar chart ---
+# --- 3. Overview plot: Cramers's V horizontal bar chart ---
 png("docs/plots/cramers_v.png", width = 800, height = 600)
 par(mar = c(5, 13, 4, 2))
 barplot(rev(cv_sorted), horiz = TRUE, las = 1,
-        xlab = expression("Cramér's V"), xlim = c(0, 1),
+        xlab = expression("Cramers's V"), xlim = c(0, 1),
         main = "Assoziation der Merkmale mit der Zielvariable (class)",
         col = "steelblue", border = NA)
 dev.off()
