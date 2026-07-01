@@ -1,6 +1,6 @@
 # Mushroom Classification — Prüfungsstudienarbeit SS2026
 
-**Maschinelles Lernen** | Prof. Dr. Robert Hable | TH Deggendorf
+**Maschinelles Lernen** | TH Deggendorf
 
 Binäre Klassifikation von Pilzen in **essbar (edible)** vs. **giftig (poisonous)** auf Basis des [UCI Mushroom Datasets](https://archive.ics.uci.edu/dataset/73/mushroom) (8.124 Instanzen, 22 nominale Merkmale). Drei supervised Learning-Verfahren verglichen — mit Fokus auf Asymmetrische Kosten (FP = tödlich, FN = harmlos).
 
